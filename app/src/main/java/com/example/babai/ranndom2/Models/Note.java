@@ -1,4 +1,4 @@
-package com.example.babai.ranndom2;
+package com.example.babai.ranndom2.Models;
 
 import com.orm.SugarRecord;
 

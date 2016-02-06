@@ -1,7 +1,8 @@
-package com.example.babai.ranndom2;
+package com.example.babai.ranndom2.Activities;
 
 import android.animation.Animator;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -11,24 +12,28 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.support.v7.widget.helper.ItemTouchHelper;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.orm.SugarDb;
-import com.orm.SugarRecord;
+import com.example.babai.ranndom2.Adapters.RecyclerAdapter;
+import com.example.babai.ranndom2.Listeners.RecyclerTouchListener;
+import com.example.babai.ranndom2.Listeners.SwipeableListener;
+import com.example.babai.ranndom2.Models.Note;
+import com.example.babai.ranndom2.R;
+import com.example.babai.ranndom2.Views.ReverseInterpolator;
+import com.example.babai.ranndom2.Views.VerticalSpaceItemDecoration;
 
 import java.util.ArrayList;
 
@@ -44,7 +49,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     RecyclerView recyclerView;
     LinearLayout first;
     LinearLayout second;
+    View coordinatorView;
+    LinearLayoutManager linearLayoutManager;
     private boolean x;
+    private boolean animated = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,12 +69,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                pressed();
+                fabPressed();
             }
         });
 
+
         first = (LinearLayout) findViewById(R.id.first);
         second = (LinearLayout) findViewById(R.id.second);
+        coordinatorView = findViewById(R.id.coordinator);
         second.setVisibility(View.INVISIBLE);
 
 
@@ -80,16 +90,47 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
 
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
-        LinearLayoutManager linearLayoutManager= new LinearLayoutManager(this);
+        linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setReverseLayout(true);
+        linearLayoutManager.setStackFromEnd(true);
+
         recyclerView.setLayoutManager(linearLayoutManager);
         try {
             notes = (ArrayList<Note>) Note.listAll(Note.class);
+        } catch (Exception e) {
+            notes = new ArrayList<>();
         }
-        catch (Exception e)
-        {
-            notes= new ArrayList<>();
-        }
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+
+        SwipeableListener swipeTouchListener =
+                new SwipeableListener(recyclerView,
+                        new SwipeableListener.SwipeListener() {
+                            @Override
+                            public boolean canSwipe(int position) {
+                                return true;
+                            }
+
+                            @Override
+                            public void onDismissedBySwipeLeft(RecyclerView recyclerView, int[] reverseSortedPositions) {
+                                for (final int position : reverseSortedPositions) {
+
+                                    removeOnSwipe(position);
+                                }
+                                recyclerAdapter.notifyDataSetChanged();
+                            }
+
+                            @Override
+                            public void onDismissedBySwipeRight(RecyclerView recyclerView, int[] reverseSortedPositions) {
+                                for (final int position : reverseSortedPositions) {
+                                    removeOnSwipe(position);
+                                }
+                                recyclerAdapter.notifyDataSetChanged();
+                            }
+                        });
+
+        recyclerView.addOnItemTouchListener(swipeTouchListener);
         recyclerAdapter = new RecyclerAdapter(notes);
+        recyclerView.addItemDecoration(new VerticalSpaceItemDecoration(40));
         recyclerView.setAdapter(recyclerAdapter);
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), recyclerView, new ClickListener() {
             @Override
@@ -101,13 +142,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onLongClick(View view, int position) {
 
-                Toast.makeText(getApplicationContext(), position + " is pressed!", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(), position + " is pressed!", Toast.LENGTH_SHORT).show();
+                //((FrameLayout) view).setForeground(new ColorDrawable(getResources().getColor(R.color.overlay)));
+                shareit(position);
 
             }
         }));
 
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
-        itemTouchHelper.attachToRecyclerView(recyclerView);
     }
 
     @Override
@@ -115,6 +156,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
+        } else if (!x) {
+            fabPressed();
         } else {
             super.onBackPressed();
         }
@@ -142,7 +185,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return super.onOptionsItemSelected(item);
     }
 
-    public void pressed() {
+    public void fabPressed() {
 
         final EditText editText1 = (EditText) findViewById(R.id.title_text);
         final EditText editText2 = (EditText) findViewById(R.id.desc_text);
@@ -164,6 +207,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 second.setVisibility(View.VISIBLE);
                 animator.start();
+                fab.setImageResource(R.mipmap.ic_done_white_24dp);
+                if(editText1.requestFocus()) {
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.showSoftInput(editText1, InputMethodManager.SHOW_IMPLICIT);
+                }
 
                 x = false;
                 //first.setVisibility(View.INVISIBLE);
@@ -178,20 +226,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     @Override
                     public void onAnimationEnd() {
                         second.setVisibility(View.INVISIBLE);
+                        hideKeyboard();
                         if (!s1.trim().equals("")) {
 
-                            Note note = new Note(s1,s2);
-                            note.save();
-                            notes.add(note);
                             editText1.setText("");
                             editText2.setText("");
-                            recyclerAdapter.notifyDataSetChanged();
+                            addNote(s1,s2);
+
                         } else {
                             Toast.makeText(getApplicationContext(), "Please enter a valid note", Toast.LENGTH_LONG).show();
                         }
 
-
-                        //first.setVisibility(View.VISIBLE);
+                        fab.setImageResource(R.mipmap.ic_mode_edit_white_24dp);
                         x = true;
                     }
 
@@ -214,6 +260,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Animator anim = android.view.ViewAnimationUtils.createCircularReveal(second, cx, cy, 0, radius);
                 second.setVisibility(View.VISIBLE);
                 anim.start();
+                if(editText1.requestFocus()) {
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.showSoftInput(editText1, InputMethodManager.SHOW_IMPLICIT);
+                }
+                fab.setImageResource(R.mipmap.ic_done_white_24dp);
 
                 x = false;
             } else {
@@ -226,19 +277,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     public void onAnimationEnd(Animator animation) {
                         super.onAnimationEnd(animation);
                         second.setVisibility(View.INVISIBLE);
+                        hideKeyboard();
                         if (!s1.trim().equals("")) {
-                            Note note = new Note(s1,s2);
-                            note.save();
-                            notes.add(note);
                             editText1.setText("");
                             editText2.setText("");
-                            recyclerAdapter.notifyDataSetChanged();
+                            addNote(s1,s2);
                         } else {
                             Toast.makeText(getApplicationContext(), "Please enter a valid note", Toast.LENGTH_LONG).show();
                         }
 
-
-
+                        fab.setImageResource(R.mipmap.ic_mode_edit_white_24dp);
                         x = true;
                     }
                 });
@@ -280,57 +328,50 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         void onLongClick(View view, int position);
     }
 
-    public static class RecyclerTouchListener implements RecyclerView.OnItemTouchListener {
-
-        private GestureDetector gestureDetector;
-        private MainActivity.ClickListener clickListener;
-
-        public RecyclerTouchListener(Context context, final RecyclerView recyclerView, final MainActivity.ClickListener clickListener) {
-            this.clickListener = clickListener;
-            gestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
-                @Override
-                public boolean onSingleTapUp(MotionEvent e) {
-                    return true;
-                }
-
-                @Override
-                public void onLongPress(MotionEvent e) {
-                    View child = recyclerView.findChildViewUnder(e.getX(), e.getY());
-                    if (child != null && clickListener != null) {
-                        clickListener.onLongClick(child, recyclerView.getChildPosition(child));
+    private void removeOnSwipe(final int position) {
+        final Note note = notes.get(position);
+        final boolean[] isDeleted = new boolean[1];
+        isDeleted[0] = true;
+        notes.remove(position);
+        recyclerAdapter.notifyDataSetChanged();
+        Snackbar.make(coordinatorView, "'" + note.gettitle() + "' was removed", Snackbar.LENGTH_LONG)
+                .setAction("Undo", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        isDeleted[0] = false;
+                        notes.add(position,note);
+                        recyclerAdapter.notifyDataSetChanged();
                     }
-                }
-            });
-        }
-
-        @Override
-        public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-
-            View child = rv.findChildViewUnder(e.getX(), e.getY());
-            if (child != null && clickListener != null && gestureDetector.onTouchEvent(e)) {
-                clickListener.onClick(child, rv.getChildPosition(child));
-            }
-            return false;
-        }
-
-        @Override
-        public void onTouchEvent(RecyclerView rv, MotionEvent e) {
-        }
-
-        @Override
-        public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
-
+                }).show();
+        if (!isDeleted[0]){
+            note.delete();
         }
     }
 
-    ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-        @Override
-        public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-            return false;
-        }
-        @Override
-        public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+    private void shareit(int pos) {
+        Intent sharing = new Intent(Intent.ACTION_SEND);
+        sharing.setType("text/plain");
+        sharing.putExtra(Intent.EXTRA_TEXT, notes
+                .get(pos).gettitle() + "\n" + notes.get(pos).getDesc());
+        startActivity(Intent.createChooser(sharing, "Share via"));
+    }
 
+    private void addNote(String s1, String s2)  {
+        Note note = new Note(s1, s2);
+        note.save();
+        notes.add(note);
+        recyclerAdapter.notifyDataSetChanged();
+
+    }
+
+    private void hideKeyboard()
+    {
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
-    };
+    }
+
+
 }
