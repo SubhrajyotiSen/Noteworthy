@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -34,12 +35,18 @@ import com.example.babai.ranndom2.Models.Note;
 import com.example.babai.ranndom2.R;
 import com.example.babai.ranndom2.Views.ReverseInterpolator;
 import com.example.babai.ranndom2.Views.VerticalSpaceItemDecoration;
+import com.mobmead.easympermission.Permission;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 
 import io.codetail.animation.SupportAnimator;
 import io.codetail.animation.ViewAnimationUtils;
 
+@com.mobmead.easympermission.RuntimePermission
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     ArrayList<Note> notes;
@@ -52,7 +59,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     View coordinatorView;
     LinearLayoutManager linearLayoutManager;
     private boolean x;
-    private boolean animated = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -178,9 +184,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+
 
         return super.onOptionsItemSelected(item);
     }
@@ -303,18 +307,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        if (id == R.id.action_backup) {
+            exportDB();
+        } else if (id == R.id.action_restore) {
+            importDB();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -343,7 +339,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         recyclerAdapter.notifyDataSetChanged();
                     }
                 }).show();
-        if (!isDeleted[0]){
+        if (isDeleted[0]){
             note.delete();
         }
     }
@@ -372,6 +368,71 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
+
+    @Permission({"android.permission.READ_EXTERNAL_STORAGE"})
+    private void importDB() {
+        try {
+            File sd = Environment.getExternalStorageDirectory();
+            File data = Environment.getDataDirectory();
+            if (sd.canWrite()) {
+                String currentDBPath = "//data//" + "com.example.babai.ranndom2"
+                        + "//databases//" + "notes.db";
+                String backupDBPath = "NotesBackup"; // From SD directory.
+                File backupDB = new File(data, currentDBPath);
+                File currentDB = new File(sd, backupDBPath);
+
+                FileChannel src = new FileInputStream(currentDB).getChannel();
+                FileChannel dst = new FileOutputStream(backupDB).getChannel();
+                dst.transferFrom(src, 0, src.size());
+                src.close();
+                dst.close();
+                Toast.makeText(getApplicationContext(), "Import Successful!",
+                        Toast.LENGTH_SHORT).show();
+                notes.clear();
+                ArrayList<Note> notes2 = (ArrayList<Note>) Note.listAll(Note.class);
+                for(int i = 0; i < notes2.size(); i++)
+                    notes.add(notes2.get(i));
+                recyclerAdapter.notifyDataSetChanged();
+
+            }
+        } catch (Exception e) {
+
+            Toast.makeText(getApplicationContext(), "Import Failed!", Toast.LENGTH_SHORT)
+                    .show();
+
+        }
+    }
+
+    @Permission({"android.permission.WRITE_EXTERNAL_STORAGE"})
+    private void exportDB() {
+        try {
+            File sd = Environment.getExternalStorageDirectory();
+            File data = Environment.getDataDirectory();
+
+            if (sd.canWrite()) {
+                String currentDBPath = "//data//" + "com.example.babai.ranndom2"
+                        + "//databases//" + "notes.db";
+                String backupDBPath = "NotesBackup";
+                File currentDB = new File(data, currentDBPath);
+                File backupDB = new File(sd, backupDBPath);
+
+                FileChannel src = new FileInputStream(currentDB).getChannel();
+                FileChannel dst = new FileOutputStream(backupDB).getChannel();
+                dst.transferFrom(src, 0, src.size());
+                src.close();
+                dst.close();
+                Toast.makeText(getApplicationContext(), "Backup Successful!",
+                        Toast.LENGTH_SHORT).show();
+
+            }
+        } catch (Exception e) {
+
+            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG)
+                    .show();
+
+        }
+    }
+
 
 
 }

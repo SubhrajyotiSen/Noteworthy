@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.orm.SugarContext;
 
+
 public class NoteApplication extends Application {
 
     @Override

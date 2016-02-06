@@ -26,6 +26,9 @@ repositories {
     maven {
         url 'http://dl.bintray.com/amulyakhare/maven'
     }
+    maven {
+        url  "http://dl.bintray.com/mobmead/EasyMPermission"
+    }
 }
 
 dependencies {
@@ -38,5 +41,9 @@ dependencies {
     compile 'com.github.satyan:sugar:1.4'
     compile 'com.github.ozodrukh:CircularReveal:1.1.0'
     compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
+    provided 'com.mobmead:easympermission:1.0.0'
+    provided 'org.glassfish:javax.annotation:10.0-b28'
+
+
 
 }
