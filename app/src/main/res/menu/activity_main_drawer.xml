@@ -4,11 +4,11 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/trash"
-            android:icon="@mipmap/ic_delete_black_24dp"
+            android:icon="@drawable/ic_delete_black_24dp"
             android:title="Trash" />
         <item
             android:id="@+id/nav_gallery"
-            android:icon="@mipmap/ic_settings_black_24dp"
+            android:icon="@drawable/ic_settings_black_24dp"
             android:title="Settings" />
 
     </group>
@@ -17,11 +17,11 @@
         <menu>
             <item android:id="@+id/action_backup"
                 android:title="Backup"
-                android:icon="@mipmap/ic_backup_black_24dp"
+                android:icon="@drawable/ic_backup_black_24dp"
                  />
             <item android:id="@+id/action_restore"
                 android:title="Restore"
-                android:icon="@mipmap/ic_restore_black_24dp"
+                android:icon="@drawable/ic_restore_black_24dp"
                  />
         </menu>
     </item>

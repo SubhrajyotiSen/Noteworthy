@@ -1,4 +1,4 @@
-package com.example.babai.ranndom2.Views;
+package com.example.babai.ranndom2.Utils;
 
 import android.view.animation.Interpolator;
 
