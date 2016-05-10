@@ -3,17 +3,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.babai.ranndom2">
 
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
-        android:allowBackup="true"
         android:name=".Application.NoteApplication"
+        android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        tools:replace="android:icon"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:replace="android:icon">
         <activity
             android:name=".Activities.MainActivity"
             android:label="@string/app_name"
@@ -25,21 +25,8 @@
             </intent-filter>
         </activity>
 
-        <meta-data
-            android:name="DATABASE"
-            android:value="notes.db" />
-        <meta-data
-            android:name="VERSION"
-            android:value="20" />
-        <meta-data
-            android:name="QUERY_LOG"
-            android:value="true" />
-        <meta-data
-            android:name="DOMAIN_PACKAGE_NAME"
-            android:value="com.example.babai" />
-
-
-
+        <activity android:name=".Activities.DetailsActivity"
+            android:parentActivityName=".Activities.MainActivity"/>
     </application>
 
 </manifest>

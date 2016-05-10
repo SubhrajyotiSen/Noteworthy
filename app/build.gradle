@@ -47,6 +47,8 @@ dependencies {
     compile 'com.github.ozodrukh:CircularReveal:1.1.0'
     compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
     compile 'com.github.asyl.animation:arcanimator:1.0.0'
+    compile 'com.github.alexive:visual-goodies:-SNAPSHOT'
+    compile 'com.jakewharton:butterknife:7.0.1'
 
 
 

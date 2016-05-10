@@ -11,7 +11,8 @@
 
         <io.codetail.widget.RevealFrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:id="@+id/first">
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -24,7 +25,7 @@
                 app:layout_behavior="@string/appbar_scrolling_view_behavior"
                 tools:context="com.example.babai.random.MainActivity"
                 tools:showIn="@layout/app_bar_main"
-                android:id="@+id/first">
+                >
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recyclerView"
@@ -44,7 +45,8 @@
 
         <io.codetail.widget.RevealFrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:id="@+id/second">
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -58,14 +60,14 @@
                 android:paddingTop="@dimen/activity_vertical_margin_top"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior"
                 tools:context="com.example.babai.random.EditActivity"
-                tools:showIn="@layout/activity_edit"
-                android:id="@+id/second"
-                android:background="#5c6bc0">
+                android:background="@color/colorAccent">
+                <!--android:background="#5c6bc0"-->
 
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingTop="20dp">
+                    android:paddingTop="20dp"
+                    android:textColorHint="#000000">
 
                     <EditText
 
@@ -82,7 +84,8 @@
 
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:textColorHint="#000000">
 
                     <EditText
                         android:id="@+id/desc_text"
@@ -91,7 +94,7 @@
                         android:layout_margin="15dp"
                         android:gravity="top|left"
                         android:hint="Note"
-                        android:inputType="text"
+                        android:inputType="textMultiLine"
                         android:textSize="25sp"/>
                 </android.support.design.widget.TextInputLayout>
 

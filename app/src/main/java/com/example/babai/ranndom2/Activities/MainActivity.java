@@ -7,12 +7,14 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -22,11 +24,13 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
@@ -42,6 +46,7 @@ import com.example.babai.ranndom2.Models.Note;
 import com.example.babai.ranndom2.R;
 import com.example.babai.ranndom2.RestoreDB;
 import com.example.babai.ranndom2.SaveDB;
+import com.example.babai.ranndom2.SimpleListener;
 import com.example.babai.ranndom2.Utils.ReverseInterpolator;
 import com.example.babai.ranndom2.Utils.VerticalSpaceItemDecoration;
 import com.nineoldandroids.animation.ObjectAnimator;
@@ -62,13 +67,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     DrawerLayout drawer;
     RecyclerAdapter recyclerAdapter;
     RecyclerView recyclerView;
-    LinearLayout first;
-    LinearLayout second;
+    FrameLayout first;
+    FrameLayout second;
     View coordinatorView;
     LinearLayoutManager linearLayoutManager;
     FrameLayout frameLayout;
-    private boolean x;
+    private boolean firstView;
     Realm realm = Realm.getDefaultInstance();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setSupportActionBar(toolbar);
         getPermissions();
 
-        x = true;
+        firstView = true;
         frameLayout = (FrameLayout) findViewById(R.id.frameLayout);
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -87,13 +93,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                fabPressed();
+                if (firstView)
+                    ArcTime();
+                else
+                    fabPressed();
             }
         });
 
 
-        first = (LinearLayout) findViewById(R.id.first);
-        second = (LinearLayout) findViewById(R.id.second);
+        first = (FrameLayout) findViewById(R.id.first);
+        second = (FrameLayout) findViewById(R.id.second);
         coordinatorView = findViewById(R.id.coordinator);
         second.setVisibility(View.INVISIBLE);
 
@@ -151,7 +160,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onClick(View view, int position) {
 
-                Toast.makeText(getApplicationContext(), position + " is selected!", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(MainActivity.this,DetailsActivity.class);
+                intent.putExtra("title",notes.get(position).gettitle());
+                intent.putExtra("desc",notes.get(position).getDesc());
+                String transitionName = getString(R.string.transition_name);
+                View cardView;
+                cardView = recyclerView.getChildAt(position);
+                ActivityOptionsCompat options =
+                        ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this,
+                                cardView,   // The view which starts the transition
+                                transitionName    // The transitionName of the view we’re transitioning to
+                        );
+                ActivityCompat.startActivity(MainActivity.this, intent, options.toBundle());
             }
 
             @Override
@@ -172,7 +192,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         assert drawer != null;
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else if (!x) {
+        } else if (!firstView) {
             fabPressed();
         } else {
             super.onBackPressed();
@@ -193,9 +213,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -207,125 +224,119 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         final String s1 = editText1.getText().toString();
         assert editText2 != null;
         final String s2 = editText2.getText().toString();
-        final int cx2 =  fab.getLeft();  //(fab.getLeft() + fab.getRight()) / 2;
+        final int cx2 =  fab.getLeft();
         final int cx = (frameLayout.getLeft()+frameLayout.getRight())/2;
-        final int cy2 = fab.getTop(); //(fab.getTop() + fab.getBottom())/2;
+        final int cy2 = fab.getTop();
         final int cy = (frameLayout.getTop()+frameLayout.getBottom())/2;
         final int radius = Math.max(second.getWidth(), second.getHeight());
-        ArcAnimator arcAnimator = ArcAnimator.createArcAnimator(fab, cx,
-                cy, 90, Side.LEFT)
-                .setDuration(300);
-        arcAnimator.addListener(new SimpleListener(){
-            @Override
-            public void onAnimationEnd(com.nineoldandroids.animation.Animator animation) {
-                //fab.setVisibility(View.INVISIBLE);
-                fab.setX(cx2);
-                fab.setY(cy2);
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+        fab.setX(cx2);
+        fab.setY(cy2);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
 
-                    SupportAnimator animator =
-                            ViewAnimationUtils.createCircularReveal(second, cx, cy, 0, radius);
-                    animator.setInterpolator(new AccelerateDecelerateInterpolator());
-                    animator.setDuration(200);
-                    SupportAnimator animator_reverse = animator.reverse();
+            SupportAnimator animator =
+                    ViewAnimationUtils.createCircularReveal(second, cx, cy, 0, radius);
+            animator.setInterpolator(new AccelerateDecelerateInterpolator());
+            animator.setDuration(200);
+            SupportAnimator animator_reverse = animator.reverse();
 
-                    if (x) {
+            if (firstView) {
 
-                        second.setVisibility(View.VISIBLE);
-                        animator.start();
-                        fab.setImageResource(R.drawable.ic_done_white_24dp);
+                second.setVisibility(View.VISIBLE);
+                animator.start();
+                fab.setImageResource(R.drawable.ic_done_white_24dp);
+                fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary)));
                 /*if(editText1.requestFocus()) {
                     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.showSoftInput(editText1, InputMethodManager.SHOW_IMPLICIT);
                 }*/
 
-                        x = false;
-                        //first.setVisibility(View.INVISIBLE);
-                    } else {
-                        animator_reverse.addListener(new SupportAnimator.AnimatorListener() {
+                firstView = false;
+                //first.setVisibility(View.INVISIBLE);
+            } else {
+                animator_reverse.addListener(new SupportAnimator.AnimatorListener() {
 
-                            @Override
-                            public void onAnimationStart() {
+                    @Override
+                    public void onAnimationStart() {
 
-                            }
-
-                            @Override
-                            public void onAnimationEnd() {
-                                second.setVisibility(View.INVISIBLE);
-                                hideKeyboard();
-                                if (!s1.trim().equals("")) {
-
-                                    editText1.setText("");
-                                    editText2.setText("");
-                                    addNote(s1,s2);
-
-                                } else {
-                                    Toast.makeText(getApplicationContext(), "Please enter a valid note", Toast.LENGTH_LONG).show();
-                                }
-
-                                fab.setImageResource(R.mipmap.ic_mode_edit_white_24dp);
-                                x = true;
-                            }
-
-                            @Override
-                            public void onAnimationCancel() {
-
-                            }
-
-                            @Override
-                            public void onAnimationRepeat() {
-
-                            }
-
-                        });
-                        animator_reverse.start();
                     }
 
-                } else {
-                    if (x) {
-                        Animator anim = android.view.ViewAnimationUtils.createCircularReveal(second, cx, cy, 0, radius);
-                        second.setVisibility(View.VISIBLE);
-                        anim.start();
+                    @Override
+                    public void onAnimationEnd() {
+                        second.setVisibility(View.INVISIBLE);
+                        hideKeyboard();
+                        if (!s1.trim().equals("")) {
+
+                            editText1.setText("");
+                            editText2.setText("");
+                            addNote(s1,s2);
+
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Please enter a valid note", Toast.LENGTH_LONG).show();
+                        }
+
+                        fab.setImageResource(R.drawable.ic_mode_edit_black_24dp);
+                        fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent)));
+                        firstView = true;
+                    }
+
+                    @Override
+                    public void onAnimationCancel() {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat() {
+
+                    }
+
+                });
+                animator_reverse.start();
+            }
+
+        } else {
+            if (firstView) {
+                Animator anim = android.view.ViewAnimationUtils.createCircularReveal(second, cx, cy, 0, radius);
+                second.setVisibility(View.VISIBLE);
+                anim.start();
                 /*if(editText1.requestFocus()) {
                     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.showSoftInput(editText1, InputMethodManager.SHOW_IMPLICIT);
                 }*/
-                        fab.setImageResource(R.drawable.ic_done_white_24dp);
 
-                        x = false;
-                    } else {
+                fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary)));
+                fab.setImageResource(R.drawable.ic_done_white_24dp);
 
-                        Animator anim = android.view.ViewAnimationUtils.createCircularReveal(second, cx, cy, 0, radius);
-                        anim.setInterpolator(new ReverseInterpolator());
-                        anim.addListener(new android.animation.AnimatorListenerAdapter() {
+                firstView = false;
+            } else {
 
-                            @Override
-                            public void onAnimationEnd(Animator animation) {
-                                super.onAnimationEnd(animation);
-                                second.setVisibility(View.INVISIBLE);
-                                hideKeyboard();
-                                if (!s1.trim().equals("")) {
-                                    editText1.setText("");
-                                    editText2.setText("");
-                                    addNote(s1,s2);
-                                } else {
-                                    Toast.makeText(getApplicationContext(), "Please enter a valid note", Toast.LENGTH_LONG).show();
-                                }
+                Animator anim = android.view.ViewAnimationUtils.createCircularReveal(second, cx, cy, 0, radius);
+                anim.setInterpolator(new ReverseInterpolator());
+                anim.addListener(new android.animation.AnimatorListenerAdapter() {
 
-                                fab.setImageResource(R.mipmap.ic_mode_edit_white_24dp);
-                                x = true;
-                            }
-                        });
-                        anim.start();
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                                /*super.onAnimationEnd(animation);*/
+                        second.setVisibility(View.INVISIBLE);
+                        hideKeyboard();
+                        if (!s1.trim().equals("")) {
+                            editText1.setText("");
+                            editText2.setText("");
+                            addNote(s1,s2);
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Please enter a valid note", Toast.LENGTH_LONG).show();
+                        }
 
+                        fab.setImageResource(R.drawable.ic_mode_edit_black_24dp);
+                        fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent)));
 
+                        firstView = true;
                     }
-                }
+                });
+                anim.start();
+
 
             }
-        });
-        arcAnimator.start();
-
+        }
 
     }
 
@@ -349,10 +360,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 AlarmManager mgr = (AlarmManager)this.getSystemService(Context.ALARM_SERVICE);
                 mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
                 System.exit(0);
-                /*ArrayList<Note> notes2 = (ArrayList<Note>) Note.listAll(Note.class);
-                for (int i = 0; i < notes2.size(); i++)
-                    notes.add(notes2.get(i));
-                recyclerAdapter.notifyDataSetChanged();*/
             }
         }
 
@@ -453,49 +460,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Log.d("Array Size",String.valueOf(notes.size()));
     }
 
-    private static class SimpleListener implements SupportAnimator.AnimatorListener, ObjectAnimator.AnimatorListener{
-
-        @Override
-        public void onAnimationStart() {
-
-        }
-
-        @Override
-        public void onAnimationEnd() {
-
-        }
-
-        @Override
-        public void onAnimationCancel() {
-
-        }
-
-        @Override
-        public void onAnimationRepeat() {
-
-        }
-
-
-        @Override
-        public void onAnimationStart(com.nineoldandroids.animation.Animator animation) {
-
-        }
-
-        @Override
-        public void onAnimationEnd(com.nineoldandroids.animation.Animator animation) {
-
-        }
-
-        @Override
-        public void onAnimationCancel(com.nineoldandroids.animation.Animator animation) {
-
-        }
-
-        @Override
-        public void onAnimationRepeat(com.nineoldandroids.animation.Animator animation) {
-
-        }
+    public int dpToPx(int dp){
+        DisplayMetrics displayMetrics = this.getResources().getDisplayMetrics();
+        return Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
     }
+
+    public void ArcTime(){
+        final int cx = (frameLayout.getLeft()+frameLayout.getRight())/2;
+        final int cy = (frameLayout.getTop()+frameLayout.getBottom())/2;
+
+        ArcAnimator arcAnimator = ArcAnimator.createArcAnimator(fab, cx,
+                cy, 90, Side.LEFT)
+                .setDuration(300);
+        arcAnimator.addListener(new SimpleListener(){
+            @Override
+            public void onAnimationEnd(com.nineoldandroids.animation.Animator animation) {
+                fabPressed();
+            }
+        });
+        arcAnimator.start();
+    }
+
+
+
 }
 
 
