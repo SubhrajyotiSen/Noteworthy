@@ -1,10 +1,10 @@
 package com.example.babai.ranndom2.Models;
 
+import com.orm.SugarRecord;
+
 import java.util.UUID;
 
-import io.realm.RealmObject;
-
-public class Note extends RealmObject {
+public class Note extends SugarRecord {
 
     public Note(String title, String desc)
     {

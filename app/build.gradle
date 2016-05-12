@@ -1,6 +1,5 @@
-apply plugin: 'com.android.application'
-apply plugin: 'realm-android'
 
+apply plugin: 'com.android.application'
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.3"
@@ -18,14 +17,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    splits {
-        abi {
-            enable true
-            reset()
-            include 'x86', 'armeabi', 'armeabi-v7a', 'mips'
-            universalApk false
-        }
-    }
+
 }
 
 repositories {
@@ -47,9 +39,10 @@ dependencies {
     compile 'com.github.ozodrukh:CircularReveal:1.1.0'
     compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
     compile 'com.github.asyl.animation:arcanimator:1.0.0'
-    compile 'com.github.alexive:visual-goodies:-SNAPSHOT'
     compile 'com.jakewharton:butterknife:7.0.1'
-
-
+    compile('com.github.afollestad.material-dialogs:commons:0.8.5.8@aar') {
+        transitive = true
+    }
+    compile 'com.github.satyan:sugar:1.4'
 
 }

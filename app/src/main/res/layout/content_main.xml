@@ -60,7 +60,7 @@
                 android:paddingTop="@dimen/activity_vertical_margin_top"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior"
                 tools:context="com.example.babai.random.EditActivity"
-                android:background="@color/colorAccent">
+                android:background="@color/colorAccentSecondary">
                 <!--android:background="#5c6bc0"-->
 
                 <android.support.design.widget.TextInputLayout

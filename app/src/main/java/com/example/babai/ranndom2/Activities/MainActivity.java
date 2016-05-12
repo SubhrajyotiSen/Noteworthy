@@ -2,9 +2,6 @@ package com.example.babai.ranndom2.Activities;
 
 import android.Manifest;
 import android.animation.Animator;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
@@ -24,19 +21,16 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.babai.ranndom2.Adapters.RecyclerAdapter;
@@ -49,7 +43,6 @@ import com.example.babai.ranndom2.SaveDB;
 import com.example.babai.ranndom2.SimpleListener;
 import com.example.babai.ranndom2.Utils.ReverseInterpolator;
 import com.example.babai.ranndom2.Utils.VerticalSpaceItemDecoration;
-import com.nineoldandroids.animation.ObjectAnimator;
 
 import java.util.ArrayList;
 
@@ -57,8 +50,6 @@ import io.codetail.animation.SupportAnimator;
 import io.codetail.animation.ViewAnimationUtils;
 import io.codetail.animation.arcanimator.ArcAnimator;
 import io.codetail.animation.arcanimator.Side;
-import io.realm.Realm;
-import io.realm.RealmResults;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -73,14 +64,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     LinearLayoutManager linearLayoutManager;
     FrameLayout frameLayout;
     private boolean firstView;
-    Realm realm = Realm.getDefaultInstance();
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getPermissions();
 
@@ -122,7 +111,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         linearLayoutManager.setStackFromEnd(true);
 
         recyclerView.setLayoutManager(linearLayoutManager);
-        notes = new ArrayList<>();
+        try{
+            notes = (ArrayList<Note>) Note.listAll(Note.class);
+        }
+        catch(Exception e) {
+            notes = new ArrayList<>();
+        }
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
         SwipeableListener swipeTouchListener =
@@ -155,14 +149,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         recyclerAdapter = new RecyclerAdapter(notes);
         recyclerView.addItemDecoration(new VerticalSpaceItemDecoration(40));
         recyclerView.setAdapter(recyclerAdapter);
-        getNotes();
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), recyclerView, new ClickListener() {
             @Override
             public void onClick(View view, int position) {
 
-                Intent intent = new Intent(MainActivity.this,DetailsActivity.class);
-                intent.putExtra("title",notes.get(position).gettitle());
-                intent.putExtra("desc",notes.get(position).getDesc());
+
+                Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
+                intent.putExtra("title", notes.get(position).gettitle());
+                intent.putExtra("desc", notes.get(position).getDesc());
+                intent.putExtra("position",position);
                 String transitionName = getString(R.string.transition_name);
                 View cardView;
                 cardView = recyclerView.getChildAt(position);
@@ -171,7 +166,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 cardView,   // The view which starts the transition
                                 transitionName    // The transitionName of the view we’re transitioning to
                         );
-                ActivityCompat.startActivity(MainActivity.this, intent, options.toBundle());
+                ActivityCompat.startActivityForResult(MainActivity.this, intent,1, options.toBundle());
+
             }
 
             @Override
@@ -263,7 +259,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     @Override
                     public void onAnimationEnd() {
                         second.setVisibility(View.INVISIBLE);
-                        hideKeyboard();
+                        hideSoftKeyboard();
                         if (!s1.trim().equals("")) {
 
                             editText1.setText("");
@@ -275,7 +271,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         }
 
                         fab.setImageResource(R.drawable.ic_mode_edit_black_24dp);
-                        fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent)));
+                        fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.colorAccentSecondary)));
                         firstView = true;
                     }
 
@@ -317,7 +313,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     public void onAnimationEnd(Animator animation) {
                                 /*super.onAnimationEnd(animation);*/
                         second.setVisibility(View.INVISIBLE);
-                        hideKeyboard();
+                        hideSoftKeyboard();
                         if (!s1.trim().equals("")) {
                             editText1.setText("");
                             editText2.setText("");
@@ -327,7 +323,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         }
 
                         fab.setImageResource(R.drawable.ic_mode_edit_black_24dp);
-                        fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent)));
+                        fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.colorAccentSecondary)));
 
                         firstView = true;
                     }
@@ -354,12 +350,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if (result) {
                 notes.clear();
                 getNotes();
-                Intent mStartActivity = new Intent(this, MainActivity.class);
-                int mPendingIntentId = 123456;
-                PendingIntent mPendingIntent = PendingIntent.getActivity(this, mPendingIntentId,    mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
-                AlarmManager mgr = (AlarmManager)this.getSystemService(Context.ALARM_SERVICE);
-                mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
-                System.exit(0);
             }
         }
 
@@ -391,10 +381,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                 }).show();
         if (isDeleted[0]){
-            realm.beginTransaction();
-            note.deleteFromRealm();
-            realm.commitTransaction();
-
+            note.delete();
         }
     }
 
@@ -408,21 +395,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void addNote(String s1, String s2)  {
         Note note = new Note(s1, s2);
-        realm.beginTransaction();
-        realm.copyToRealm(note);
-        realm.commitTransaction();
+        note.save();
         notes.add(note);
         recyclerAdapter.notifyDataSetChanged();
 
-    }
-
-    private void hideKeyboard()
-    {
-        View view = this.getCurrentFocus();
-        if (view != null) {
-            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        }
     }
 
 
@@ -447,23 +423,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void getNotes(){
-        realm.refresh();
-        realm.setAutoRefresh(true);
-        RealmResults<Note> realmResults = realm.where(Note.class).findAll();
-        Log.d("Size", String.valueOf(realmResults.size()));
-        notes.clear();
-        for (int i = 0; i < realmResults.size(); i++) {
-            notes.add(realmResults.get(i));
-            Log.d("fav add", realmResults.get(i).gettitle());
-        }
+        ArrayList<Note> notes2 = (ArrayList<Note>) Note.listAll(Note.class);
+        for (int i = 0; i <notes2.size(); i++)
+            notes.add(notes2.get(i));
         recyclerAdapter.notifyDataSetChanged();
         Log.d("Array Size",String.valueOf(notes.size()));
     }
 
-    public int dpToPx(int dp){
-        DisplayMetrics displayMetrics = this.getResources().getDisplayMetrics();
-        return Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
-    }
 
     public void ArcTime(){
         final int cx = (frameLayout.getLeft()+frameLayout.getRight())/2;
@@ -481,11 +447,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         arcAnimator.start();
     }
 
+    public void hideSoftKeyboard() {
+        if(getCurrentFocus()!=null) {
+            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode==RESULT_OK)
+        {
+            int index= data.getIntExtra("position",-1);
+            Note note = notes.get(index);
+            note.delete();
+            notes.remove(index);
+            note = new Note(data.getStringExtra("title"),data.getStringExtra("desc"));
+            notes.add(index,note);
+            note.save();
+            recyclerAdapter.notifyDataSetChanged();
+        }
+    }
 
 
 }
-
-
-
-
-

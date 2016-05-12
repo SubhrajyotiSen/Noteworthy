@@ -2,6 +2,7 @@ package com.example.babai.ranndom2.Adapters;
 
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,8 @@ import com.example.babai.ranndom2.Models.Note;
 import com.example.babai.ranndom2.R;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MainViewHolder> {
 
@@ -22,7 +25,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MainVi
         CardView cv;
         TextView title;
         ImageView imageView;
-
 
         MainViewHolder(View itemView) {
             super(itemView);
@@ -73,4 +75,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MainVi
     public int getItemCount() {
         return notes.size();
     }
+
+
 }

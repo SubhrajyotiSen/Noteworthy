@@ -5,10 +5,7 @@ import android.os.Environment;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.nio.channels.FileChannel;
-
-import io.realm.Realm;
 
 public class SaveDB{
     public static boolean save(){
@@ -18,8 +15,8 @@ public class SaveDB{
 
             if (sd.canWrite()) {
                 String currentDBPath = "//data//" + "com.example.babai.ranndom2"
-                        + "//files//" + "default.realm";
-                String backupDBPath = "NotesBackup.realm";
+                        + "//databases//" + "notes.db";
+                String backupDBPath = "/NotesBackup/NotesBackup.db";
                 File currentDB = new File(data, currentDBPath);
                 File backupDB = new File(sd, backupDBPath);
 
@@ -33,17 +30,6 @@ public class SaveDB{
         } catch (Exception e){
             return false;
         }
-        /*Realm realm = Realm.getDefaultInstance();
-        try {
-            realm.writeCopyTo(new File(Environment.getExternalStorageDirectory(),"default.realm"));
-
-            realm.close();
-            return true;
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return  false;*/
 
     }
 }
