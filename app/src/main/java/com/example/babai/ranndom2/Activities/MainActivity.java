@@ -14,12 +14,14 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -55,7 +57,7 @@ import io.codetail.animation.ViewAnimationUtils;
 import io.codetail.animation.arcanimator.ArcAnimator;
 import io.codetail.animation.arcanimator.Side;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,SearchView.OnQueryTextListener {
 
     ArrayList<Note> notes;
     FloatingActionButton fab;
@@ -69,6 +71,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     FrameLayout frameLayout;
     private boolean firstView;
     DBController dbController;
+    SearchView searchView;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -170,8 +175,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 cardView = recyclerView.getChildAt(position);
                 ActivityOptionsCompat options =
                         ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this,
-                                cardView,   // The view which starts the transition
-                                transitionName    // The transitionName of the view we’re transitioning to
+                                cardView,
+                                transitionName
                         );
                 ActivityCompat.startActivityForResult(MainActivity.this, intent,1, options.toBundle());
 
@@ -203,15 +208,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.main, menu);
+        final MenuItem item = menu.findItem(R.id.action_search);
+        searchView = (SearchView) MenuItemCompat.getActionView(item);
+        searchView.setOnQueryTextListener(this);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         return super.onOptionsItemSelected(item);
@@ -232,6 +237,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         final int radius = Math.max(second.getWidth(), second.getHeight());
         fab.setX(cx2);
         fab.setY(cy2);
+        searchView.onActionViewCollapsed();
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
 
             SupportAnimator animator =
@@ -374,6 +380,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        searchView.clearFocus();
+        return true;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String query) {
+        filter(notes,query);
+        return true;
+    }
+
     public interface ClickListener {
         void onClick(View view, int position);
 
@@ -492,5 +510,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    private void filter(List<Note> models, String query) {
+        query = query.toLowerCase();
+
+        final ArrayList<Note> filteredModelList = new ArrayList<>();
+        for (Note model : models) {
+            final String text = model.gettitle().concat(" ").concat(model.getDesc()).toLowerCase();
+            if (text.contains(query)) {
+                filteredModelList.add(model);
+            }
+        }
+        recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+        recyclerAdapter = new RecyclerAdapter(filteredModelList);
+        recyclerView.setAdapter(recyclerAdapter);
+        recyclerAdapter.notifyDataSetChanged();
+    }
 
 }

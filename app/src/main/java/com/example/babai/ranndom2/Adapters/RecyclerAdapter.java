@@ -20,34 +20,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MainViewHolder> {
+public class RecyclerAdapter extends RecyclerView.Adapter<MainViewHolder> {
 
-    public static class MainViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,View.OnLongClickListener {
 
-        CardView cv;
-        TextView title;
-        ImageView imageView;
-        TextView dateview;
-
-        MainViewHolder(View itemView) {
-            super(itemView);
-            cv = (CardView) itemView.findViewById(R.id.card_view);
-            title = (TextView) itemView.findViewById(R.id.title);
-            imageView = (ImageView) itemView.findViewById(R.id.letter_head);
-            dateview = (TextView) itemView.findViewById(R.id.dateView);
-
-        }
-
-        @Override
-        public void onClick(View v) {
-
-        }
-
-        @Override
-        public boolean onLongClick(View v) {
-            return false;
-        }
-    }
 
     ArrayList<Note> notes;
     ColorGenerator generator = ColorGenerator.MATERIAL;
