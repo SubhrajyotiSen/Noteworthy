@@ -21,7 +21,6 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,7 +32,9 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.babai.ranndom2.Adapters.RecyclerAdapter;
+import com.example.babai.ranndom2.DB.DBController;
 import com.example.babai.ranndom2.Listeners.RecyclerTouchListener;
 import com.example.babai.ranndom2.Listeners.SwipeableListener;
 import com.example.babai.ranndom2.Models.Note;
@@ -44,7 +45,10 @@ import com.example.babai.ranndom2.SimpleListener;
 import com.example.babai.ranndom2.Utils.ReverseInterpolator;
 import com.example.babai.ranndom2.Utils.VerticalSpaceItemDecoration;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import io.codetail.animation.SupportAnimator;
 import io.codetail.animation.ViewAnimationUtils;
@@ -64,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     LinearLayoutManager linearLayoutManager;
     FrameLayout frameLayout;
     private boolean firstView;
+    DBController dbController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     fabPressed();
             }
         });
+        dbController = new DBController(this);
 
 
         first = (FrameLayout) findViewById(R.id.first);
@@ -112,7 +118,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         recyclerView.setLayoutManager(linearLayoutManager);
         try{
-            notes = (ArrayList<Note>) Note.listAll(Note.class);
+            notes = new ArrayList<>();
+            getNotes();
         }
         catch(Exception e) {
             notes = new ArrayList<>();
@@ -173,8 +180,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onLongClick(View view, int position) {
 
-                //Toast.makeText(getApplicationContext(), position + " is pressed!", Toast.LENGTH_SHORT).show();
-                //((FrameLayout) view).setForeground(new ColorDrawable(getResources().getColor(R.color.overlay)));
                 shareIt(position);
 
             }
@@ -343,14 +348,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (id == R.id.action_backup) {
             boolean result = SaveDB.save();
-            Toast.makeText(MainActivity.this, result ? "Backup successful":"Restore unsuccessful", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, result ? "Backup successful":"Backup unsuccessful", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.action_restore) {
             boolean result = RestoreDB.importDB();
             Toast.makeText(MainActivity.this, result ? "Restore successful":"Restore unsuccessful", Toast.LENGTH_SHORT).show();
             if (result) {
                 notes.clear();
                 getNotes();
+                recyclerAdapter.notifyDataSetChanged();
             }
+        }
+        else if (id == R.id.about){
+            new MaterialDialog.Builder(this)
+                    .title("NoteWorthy")
+                    .content("Version: 1.0\n" +
+                            "Developer: Subhrajyoti Sen\n"+
+                            "Source: https://github.com/SubhrajyotiSen/Noteworthy")
+                    .positiveText("Kbye")
+                    .show();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -381,7 +396,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                 }).show();
         if (isDeleted[0]){
-            note.delete();
+            dbController.deleteNote(note);
         }
     }
 
@@ -389,13 +404,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Intent sharing = new Intent(Intent.ACTION_SEND);
         sharing.setType("text/plain");
         sharing.putExtra(Intent.EXTRA_TEXT, notes
-                .get(pos).gettitle() + "\n" + notes.get(pos).getDesc());
+                .get(pos).gettitle() + "\n\n" + notes.get(pos).getDesc());
         startActivity(Intent.createChooser(sharing, "Share via"));
     }
 
     private void addNote(String s1, String s2)  {
+        Date date = new Date();
+        String Date= DateFormat.getDateInstance().format(date);
         Note note = new Note(s1, s2);
-        note.save();
+        note.setDate(Date);
+        dbController.addNote(note);
         notes.add(note);
         recyclerAdapter.notifyDataSetChanged();
 
@@ -423,11 +441,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void getNotes(){
-        ArrayList<Note> notes2 = (ArrayList<Note>) Note.listAll(Note.class);
-        for (int i = 0; i <notes2.size(); i++)
+        List<Note> notes2 = dbController.getAllNotes();
+        for (int i = 0; i < notes2.size(); i++) {
             notes.add(notes2.get(i));
-        recyclerAdapter.notifyDataSetChanged();
-        Log.d("Array Size",String.valueOf(notes.size()));
+        }
+
     }
 
 
@@ -462,11 +480,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         {
             int index= data.getIntExtra("position",-1);
             Note note = notes.get(index);
-            note.delete();
+            dbController.deleteNote(note);
             notes.remove(index);
             note = new Note(data.getStringExtra("title"),data.getStringExtra("desc"));
+            Date date = new Date();
+            String Date= DateFormat.getDateInstance().format(date);
+            note.setDate(Date);
             notes.add(index,note);
-            note.save();
+            dbController.addNote(note);
             recyclerAdapter.notifyDataSetChanged();
         }
     }

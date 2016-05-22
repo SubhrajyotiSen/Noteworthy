@@ -17,7 +17,7 @@ public class RestoreDB {
             if (sd.canWrite()) {
                 String currentDBPath = "//data//" + "com.example.babai.ranndom2"
                         + "//databases//" + "notes.db";
-                String backupDBPath = "/NotesBackup/NotesBackup.db"; // From SD directory.
+                String backupDBPath = "/NotesBackup.db"; // From SD directory.
                 File backupDB = new File(data, currentDBPath);
                 File currentDB = new File(sd, backupDBPath);
 

@@ -1,6 +1,7 @@
 package com.example.babai.ranndom2;
 
 import android.os.Environment;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,7 +17,7 @@ public class SaveDB{
             if (sd.canWrite()) {
                 String currentDBPath = "//data//" + "com.example.babai.ranndom2"
                         + "//databases//" + "notes.db";
-                String backupDBPath = "/NotesBackup/NotesBackup.db";
+                String backupDBPath = "/NotesBackup.db";
                 File currentDB = new File(data, currentDBPath);
                 File backupDB = new File(sd, backupDBPath);
 
@@ -28,6 +29,7 @@ public class SaveDB{
             }
             return true;
         } catch (Exception e){
+            Log.e("haha",e.getLocalizedMessage());
             return false;
         }
 

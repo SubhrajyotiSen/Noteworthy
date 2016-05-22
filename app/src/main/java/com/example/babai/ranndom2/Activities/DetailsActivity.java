@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
@@ -54,8 +56,6 @@ public class DetailsActivity extends AppCompatActivity {
         titleText.setText(getIntent().getStringExtra("title"));
         detailsText.setText(getIntent().getStringExtra("desc"));
         position = getIntent().getIntExtra("position",-1);
-        Toast.makeText(DetailsActivity.this, String.valueOf(position), Toast.LENGTH_SHORT).show();
-
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -69,7 +69,7 @@ public class DetailsActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                onBackPressed();
+                finish();
                 return true;
         }
 
@@ -90,4 +90,9 @@ public class DetailsActivity extends AppCompatActivity {
 
 
     }
+    @Override
+    public void onBackPressed() {
+        update();
+    }
+
 }

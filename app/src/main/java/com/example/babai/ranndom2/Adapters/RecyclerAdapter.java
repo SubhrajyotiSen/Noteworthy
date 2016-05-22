@@ -14,6 +14,8 @@ import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.example.babai.ranndom2.Models.Note;
 import com.example.babai.ranndom2.R;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -25,12 +27,14 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MainVi
         CardView cv;
         TextView title;
         ImageView imageView;
+        TextView dateview;
 
         MainViewHolder(View itemView) {
             super(itemView);
             cv = (CardView) itemView.findViewById(R.id.card_view);
             title = (TextView) itemView.findViewById(R.id.title);
             imageView = (ImageView) itemView.findViewById(R.id.letter_head);
+            dateview = (TextView) itemView.findViewById(R.id.dateView);
 
         }
 
@@ -68,6 +72,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MainVi
         mainViewHolder.title.setText(notes.get(i).gettitle());
         TextDrawable drawable = TextDrawable.builder().buildRound(String.valueOf(notes.get(i).gettitle().charAt(0)).toUpperCase(), generator.getRandomColor());
         mainViewHolder.imageView.setImageDrawable(drawable);
+        mainViewHolder.dateview.setText(notes.get(i).getDate());
 
     }
 

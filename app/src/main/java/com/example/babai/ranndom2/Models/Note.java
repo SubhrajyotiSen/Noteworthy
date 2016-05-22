@@ -1,10 +1,18 @@
 package com.example.babai.ranndom2.Models;
 
-import com.orm.SugarRecord;
-
 import java.util.UUID;
 
-public class Note extends SugarRecord {
+public class Note {
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    private int id;
 
     public Note(String title, String desc)
     {
@@ -14,9 +22,30 @@ public class Note extends SugarRecord {
 
     }
 
+    public Note(int id,String title, String desc, String date)
+    {
+        this.id = id;
+        this.title=title;
+        this.desc=desc;
+        this.uid = UUID.randomUUID().toString();
+        this.date = date;
+
+    }
+
     public Note(){
 
     }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    private String date;
+
 
 
 
