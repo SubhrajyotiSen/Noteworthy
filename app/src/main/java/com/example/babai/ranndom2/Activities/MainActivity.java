@@ -41,7 +41,7 @@ import com.example.babai.ranndom2.Models.Note;
 import com.example.babai.ranndom2.R;
 import com.example.babai.ranndom2.RestoreDB;
 import com.example.babai.ranndom2.SaveDB;
-import com.example.babai.ranndom2.SimpleListener;
+import com.example.babai.ranndom2.Listeners.SimpleListener;
 import com.example.babai.ranndom2.Utils.ReverseInterpolator;
 import com.example.babai.ranndom2.Utils.VerticalSpaceItemDecoration;
 
