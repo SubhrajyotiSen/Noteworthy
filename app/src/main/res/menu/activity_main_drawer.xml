@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
+
+    <item android:title="Backup/Restore">
+        <menu>
+            <item android:id="@+id/online"
+                android:title="Online"
+                android:icon="@drawable/ic_backup_black_24dp"
+                 />
+            <item android:id="@+id/offline"
+                android:title="Local"
+                android:icon="@drawable/ic_restore_black_24dp"
+                 />
+        </menu>
+    </item>
+
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/trash"
@@ -10,23 +24,11 @@
             android:id="@+id/nav_gallery"
             android:icon="@drawable/ic_settings_black_24dp"
             android:title="Settings" />
+        <item android:id="@+id/about"
+            android:icon="@drawable/ic_info_black_24dp"
+            android:title="About"/>
 
     </group>
 
-    <item android:title="Backup/Restore">
-        <menu>
-            <item android:id="@+id/action_backup"
-                android:title="Backup"
-                android:icon="@drawable/ic_backup_black_24dp"
-                 />
-            <item android:id="@+id/action_restore"
-                android:title="Restore"
-                android:icon="@drawable/ic_restore_black_24dp"
-                 />
-        </menu>
-    </item>
-    <item android:id="@+id/about"
-        android:icon="@drawable/ic_info_black_24dp"
-        android:title="About"/>
 
 </menu>

@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -34,6 +35,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.babai.ranndom2.Adapters.RecyclerAdapter;
 import com.example.babai.ranndom2.DB.DBController;
@@ -351,28 +353,53 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        switch (id) {
+            case R.id.online:
+                startActivity(new Intent(MainActivity.this, BackupActivity.class));
+                break;
+            case R.id.offline:
+                new MaterialDialog.Builder(this)
+                        .title("Backup/Restore")
+                        .content("Backup your notes to drive so that you can retrieve them anytime on any device")
+                        .positiveText("Backup")
+                        .negativeText("Restore")
+                        .neutralText("Cancel")
+                        .onPositive(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                boolean result = SaveDB.save();
+                                Toast.makeText(MainActivity.this, result ? "Backup successful" : "Backup unsuccessful", Toast.LENGTH_SHORT).show();
 
-        if (id == R.id.action_backup) {
-            boolean result = SaveDB.save();
-            Toast.makeText(MainActivity.this, result ? "Backup successful":"Backup unsuccessful", Toast.LENGTH_SHORT).show();
-        } else if (id == R.id.action_restore) {
-            boolean result = RestoreDB.importDB();
-            Toast.makeText(MainActivity.this, result ? "Restore successful":"Restore unsuccessful", Toast.LENGTH_SHORT).show();
-            if (result) {
-                notes.clear();
-                getNotes();
-                recyclerAdapter.notifyDataSetChanged();
-            }
+                            }
+                        })
+                        .onNegative(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                boolean result = RestoreDB.importDB();
+                                Toast.makeText(MainActivity.this, result ? "Restore successful" : "Restore unsuccessful", Toast.LENGTH_SHORT).show();
+                                if (result) {
+                                    notes.clear();
+                                    getNotes();
+                                    recyclerAdapter.notifyDataSetChanged();
+                                }
+                            }
+                        })
+                        .show();
+                break;
+            case R.id.about:
+                new MaterialDialog.Builder(this)
+                        .title("NoteWorthy")
+                        .content("Version: 1.0\n" +
+                                "Developer: Subhrajyoti Sen\n" +
+                                "Source: https://github.com/SubhrajyotiSen/Noteworthy")
+                        .positiveText("Kbye")
+                        .show();
+
+                break;
+
+
         }
-        else if (id == R.id.about){
-            new MaterialDialog.Builder(this)
-                    .title("NoteWorthy")
-                    .content("Version: 1.0\n" +
-                            "Developer: Subhrajyoti Sen\n"+
-                            "Source: https://github.com/SubhrajyotiSen/Noteworthy")
-                    .positiveText("Kbye")
-                    .show();
-        }
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         assert drawer != null;

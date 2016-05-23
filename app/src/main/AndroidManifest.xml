@@ -28,6 +28,9 @@
         <activity
             android:name=".Activities.DetailsActivity"
             android:parentActivityName=".Activities.MainActivity" />
+        <activity
+            android:name=".Activities.BackupActivity"
+            android:parentActivityName=".Activities.MainActivity" />
 
 
     </application>
