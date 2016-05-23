@@ -71,9 +71,6 @@ public class TrashActivity extends AppCompatActivity implements SearchView.OnQue
     DBController dbController;
     DBTrashController dbTrashController;
     SearchView searchView;
-    Boolean test;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
