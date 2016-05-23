@@ -5,7 +5,7 @@
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:name=".Application.NoteApplication"
@@ -31,8 +31,9 @@
         <activity
             android:name=".Activities.BackupActivity"
             android:parentActivityName=".Activities.MainActivity" />
-
-
+        <activity android:name=".Activities.TrashActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".Activities.MainActivity"></activity>
     </application>
 
 </manifest>

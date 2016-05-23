@@ -39,6 +39,7 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.babai.ranndom2.Adapters.RecyclerAdapter;
 import com.example.babai.ranndom2.DB.DBController;
+import com.example.babai.ranndom2.DB.DBTrashController;
 import com.example.babai.ranndom2.Listeners.RecyclerTouchListener;
 import com.example.babai.ranndom2.Listeners.SwipeableListener;
 import com.example.babai.ranndom2.Models.Note;
@@ -73,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     FrameLayout frameLayout;
     private boolean firstView;
     DBController dbController;
+    DBTrashController dbTrashController;
     SearchView searchView;
 
 
@@ -101,6 +103,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
         dbController = new DBController(this);
+        dbTrashController = new DBTrashController(this);
 
 
         first = (FrameLayout) findViewById(R.id.first);
@@ -396,6 +399,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .show();
 
                 break;
+            case R.id.trash:
+                startActivity(new Intent(MainActivity.this,TrashActivity.class));
 
 
         }
@@ -442,6 +447,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }).show();
         if (isDeleted[0]){
             dbController.deleteNote(note);
+            dbTrashController.addNote(note);
         }
     }
 
@@ -460,6 +466,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         note.setDate(Date);
         dbController.addNote(note);
         notes.add(note);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerAdapter = new RecyclerAdapter(notes);
+        recyclerView.setAdapter(recyclerAdapter);
         recyclerAdapter.notifyDataSetChanged();
 
     }
@@ -547,7 +556,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 filteredModelList.add(model);
             }
         }
-        recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+        recyclerView.setLayoutManager(linearLayoutManager);
         recyclerAdapter = new RecyclerAdapter(filteredModelList);
         recyclerView.setAdapter(recyclerAdapter);
         recyclerAdapter.notifyDataSetChanged();
