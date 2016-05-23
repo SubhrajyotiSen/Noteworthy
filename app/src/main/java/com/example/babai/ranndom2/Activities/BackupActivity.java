@@ -119,6 +119,7 @@ public class BackupActivity extends AppCompatActivity {
         manageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 openOnDrive(DriveId.decodeFromString(backupFolder));
             }
         });

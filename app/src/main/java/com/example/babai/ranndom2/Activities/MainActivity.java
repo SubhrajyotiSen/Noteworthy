@@ -363,7 +363,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.offline:
                 new MaterialDialog.Builder(this)
                         .title("Backup/Restore")
-                        .content("Backup your notes to drive so that you can retrieve them anytime on any device")
+                        .content("Backup your notes locally so that you can retrieve later")
                         .positiveText("Backup")
                         .negativeText("Restore")
                         .neutralText("Cancel")
@@ -532,7 +532,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (resultCode==RESULT_OK)
         {
-            int index= data.getIntExtra("position",-1);
+            /*int index= data.getIntExtra("position",-1);
             Note note = notes.get(index);
             dbController.deleteNote(note);
             notes.remove(index);
@@ -541,7 +541,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             String Date= DateFormat.getDateInstance().format(date);
             note.setDate(Date);
             notes.add(index,note);
-            dbController.addNote(note);
+            dbController.addNote(note);*/
+            int index= data.getIntExtra("position",-1);
+            notes.get(index).settitle(data.getStringExtra("title"));
+            notes.get(index).setDesc(data.getStringExtra("desc"));
+            notes.get(index).setDate(DateFormat.getDateInstance().format(new Date()));
+            dbController.updateNote(notes.get(index));
             recyclerAdapter.notifyDataSetChanged();
         }
     }
