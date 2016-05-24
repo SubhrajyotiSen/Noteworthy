@@ -12,7 +12,7 @@
         <io.codetail.widget.RevealFrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/first">
+            >
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -20,7 +20,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="16dp"
-
+                android:id="@+id/first"
                 android:paddingTop="@dimen/activity_vertical_margin_top"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior"
                 tools:context="com.example.babai.random.MainActivity"
@@ -46,7 +46,7 @@
         <io.codetail.widget.RevealFrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/second">
+            >
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -60,7 +60,8 @@
                 android:paddingTop="@dimen/activity_vertical_margin_top"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior"
                 tools:context="com.example.babai.random.EditActivity"
-                android:background="@color/colorAccentSecondary">
+                android:background="@color/colorAccentSecondary"
+                android:id="@+id/second">
                 <!--android:background="#5c6bc0"-->
 
                 <android.support.design.widget.TextInputLayout

@@ -27,6 +27,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<MainViewHolder> {
     ArrayList<Note> notes;
     ColorGenerator generator = ColorGenerator.MATERIAL;
 
+
     public RecyclerAdapter(ArrayList<Note> notes) {
         this.notes = notes;
     }
@@ -45,7 +46,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<MainViewHolder> {
     @Override
     public void onBindViewHolder(MainViewHolder mainViewHolder, int i) {
         mainViewHolder.title.setText(notes.get(i).gettitle());
-        TextDrawable drawable = TextDrawable.builder().buildRound(String.valueOf(notes.get(i).gettitle().charAt(0)).toUpperCase(), generator.getRandomColor());
+        TextDrawable drawable = TextDrawable.builder().buildRound(String.valueOf(notes.get(i).gettitle().charAt(0)).toUpperCase(), generator.getColor(notes.get(i).gettitle()));
         mainViewHolder.imageView.setImageDrawable(drawable);
         mainViewHolder.dateview.setText(notes.get(i).getDate());
 

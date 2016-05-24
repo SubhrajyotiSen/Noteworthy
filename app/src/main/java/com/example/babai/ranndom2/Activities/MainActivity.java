@@ -33,6 +33,7 @@ import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -67,8 +68,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     DrawerLayout drawer;
     RecyclerAdapter recyclerAdapter;
     RecyclerView recyclerView;
-    FrameLayout first;
-    FrameLayout second;
+    LinearLayout first;
+    LinearLayout second;
     View coordinatorView;
     LinearLayoutManager linearLayoutManager;
     FrameLayout frameLayout;
@@ -106,8 +107,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         dbTrashController = new DBTrashController(this);
 
 
-        first = (FrameLayout) findViewById(R.id.first);
-        second = (FrameLayout) findViewById(R.id.second);
+        first = (LinearLayout) findViewById(R.id.first);
+        second = (LinearLayout) findViewById(R.id.second);
         coordinatorView = findViewById(R.id.coordinator);
         second.setVisibility(View.INVISIBLE);
 
