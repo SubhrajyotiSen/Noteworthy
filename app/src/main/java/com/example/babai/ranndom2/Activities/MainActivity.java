@@ -14,6 +14,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -24,6 +25,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,17 +39,18 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.babai.ranndom2.Adapters.RecyclerAdapter;
 import com.example.babai.ranndom2.DB.DBController;
 import com.example.babai.ranndom2.DB.DBTrashController;
 import com.example.babai.ranndom2.Listeners.RecyclerTouchListener;
+import com.example.babai.ranndom2.Listeners.SimpleListener;
 import com.example.babai.ranndom2.Listeners.SwipeableListener;
 import com.example.babai.ranndom2.Models.Note;
 import com.example.babai.ranndom2.R;
 import com.example.babai.ranndom2.RestoreDB;
 import com.example.babai.ranndom2.SaveDB;
-import com.example.babai.ranndom2.Listeners.SimpleListener;
 import com.example.babai.ranndom2.Utils.ReverseInterpolator;
 import com.example.babai.ranndom2.Utils.VerticalSpaceItemDecoration;
 
@@ -56,6 +59,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import io.codetail.animation.SupportAnimator;
 import io.codetail.animation.ViewAnimationUtils;
 import io.codetail.animation.arcanimator.ArcAnimator;
@@ -63,24 +68,28 @@ import io.codetail.animation.arcanimator.Side;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,SearchView.OnQueryTextListener {
 
-    ArrayList<Note> notes;
+    @Bind(R.id.fab)
     FloatingActionButton fab;
+    @Bind(R.id.drawer_layout)
     DrawerLayout drawer;
-    RecyclerAdapter recyclerAdapter;
+    @Bind(R.id.recyclerView)
     RecyclerView recyclerView;
+    @Bind(R.id.first)
     LinearLayout first;
+    @Bind(R.id.second)
     LinearLayout second;
+    @Bind(R.id.coordinator)
     View coordinatorView;
     LinearLayoutManager linearLayoutManager;
+    @Bind(R.id.frameLayout)
     FrameLayout frameLayout;
-    private boolean firstView;
     DBController dbController;
     DBTrashController dbTrashController;
     SearchView searchView;
-    String FILTER;
     ArrayList<Note> filteredModelList;
-
-
+    RecyclerAdapter recyclerAdapter;
+    ArrayList<Note> notes;
+    private boolean firstView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,12 +98,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getPermissions();
-        FILTER = "NOTES";
+
+        ButterKnife.bind(this);
 
         firstView = true;
-        frameLayout = (FrameLayout) findViewById(R.id.frameLayout);
-
-        fab = (FloatingActionButton) findViewById(R.id.fab);
         Animation animation = AnimationUtils.loadAnimation(this, R.anim.simple_grow);
         fab.startAnimation(animation);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -110,22 +117,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         dbTrashController = new DBTrashController(this);
 
 
-        first = (LinearLayout) findViewById(R.id.first);
-        second = (LinearLayout) findViewById(R.id.second);
-        coordinatorView = findViewById(R.id.coordinator);
         second.setVisibility(View.INVISIBLE);
 
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
+        drawer.addDrawerListener(toggle);
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         assert navigationView != null;
         navigationView.setNavigationItemSelectedListener(this);
 
-        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setReverseLayout(true);
         linearLayoutManager.setStackFromEnd(true);
@@ -133,10 +135,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         recyclerView.setLayoutManager(linearLayoutManager);
         try{
             notes = new ArrayList<>();
+            filteredModelList = new ArrayList<>();
             getNotes();
         }
         catch(Exception e) {
             notes = new ArrayList<>();
+            filteredModelList = new ArrayList<>();
         }
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
@@ -176,15 +180,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
                 Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
-                if (FILTER.equals("NOTES")){
-                    intent.putExtra("title", notes.get(position).gettitle());
-                    intent.putExtra("desc", notes.get(position).getDesc());
-
-                }
-                else {
-                    intent.putExtra("title", filteredModelList.get(position).gettitle());
-                    intent.putExtra("desc", filteredModelList.get(position).getDesc());
-                }
+                intent.putExtra("title", filteredModelList.get(position).gettitle());
+                intent.putExtra("desc", filteredModelList.get(position).getDesc());
                 intent.putExtra("position",position);
                 String transitionName = getString(R.string.transition_name);
                 View cardView;
@@ -265,6 +262,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if (firstView) {
 
                 second.setVisibility(View.VISIBLE);
+                first.setVisibility(View.INVISIBLE);
                 animator.start();
                 fab.setImageResource(R.drawable.ic_done_white_24dp);
                 fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary)));
@@ -286,6 +284,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     @Override
                     public void onAnimationEnd() {
                         second.setVisibility(View.INVISIBLE);
+                        first.setVisibility(View.VISIBLE);
                         hideSoftKeyboard();
                         if (!s1.trim().equals("")) {
 
@@ -320,6 +319,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if (firstView) {
                 Animator anim = android.view.ViewAnimationUtils.createCircularReveal(second, cx, cy, 0, radius);
                 second.setVisibility(View.VISIBLE);
+                first.setVisibility(View.INVISIBLE);
                 anim.start();
                 /*if(editText1.requestFocus()) {
                     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -340,6 +340,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     public void onAnimationEnd(Animator animation) {
                                 /*super.onAnimationEnd(animation);*/
                         second.setVisibility(View.INVISIBLE);
+                        first.setVisibility(View.VISIBLE);
                         hideSoftKeyboard();
                         if (!s1.trim().equals("")) {
                             editText1.setText("");
@@ -402,11 +403,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.about:
                 new MaterialDialog.Builder(this)
-                        .title("NoteWorthy")
-                        .content("Version: 1.0\n" +
-                                "Developer: Subhrajyoti Sen\n" +
-                                "Source: https://github.com/SubhrajyotiSen/Noteworthy")
-                        .positiveText("Kbye")
+                        .title("NoteWorthy v1.0.2")
+                        .content(Html.fromHtml("<p>Check out the project on <a href=\"https://github.com/SubhrajyotiSen/Noteworthy\">GitHub</a></p>"))
+                        .titleGravity(GravityEnum.CENTER)
+                        .contentGravity(GravityEnum.CENTER)
+                        .icon(ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_launcher, null))
                         .show();
 
                 break;
@@ -431,14 +432,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onQueryTextChange(String query) {
+        if (!searchView.isIconified())
         filter(notes,query);
         return true;
-    }
-
-    public interface ClickListener {
-        void onClick(View view, int position);
-
-        void onLongClick(View view, int position);
     }
 
     private void removeOnSwipe(final int position) {
@@ -452,11 +448,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     @Override
                     public void onClick(View view) {
                         isDeleted[0] = false;
-                        notes.add(position,note);
+                        notes.add(position, note);
+                        filteredModelList.add(position, note);
                         recyclerAdapter.notifyDataSetChanged();
                     }
                 }).show();
-        if (isDeleted[0]){
+        if (isDeleted[0]) {
             dbController.deleteNote(note);
             dbTrashController.addNote(note);
         }
@@ -477,13 +474,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         note.setDate(Date);
         dbController.addNote(note);
         notes.add(note);
+        filteredModelList.add(note);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerAdapter = new RecyclerAdapter(notes);
         recyclerView.setAdapter(recyclerAdapter);
         recyclerAdapter.notifyDataSetChanged();
 
     }
-
 
     private void getPermissions(){
         ArrayList<String> permissions = new ArrayList<>();
@@ -509,10 +506,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         List<Note> notes2 = dbController.getAllNotes();
         for (int i = 0; i < notes2.size(); i++) {
             notes.add(notes2.get(i));
+            filteredModelList.add(notes2.get(i));
         }
 
     }
-
 
     public void ArcTime(){
         final int cx = (frameLayout.getLeft()+frameLayout.getRight())/2;
@@ -554,8 +551,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void filter(List<Note> models, String query) {
         query = query.toLowerCase();
-
-        filteredModelList = new ArrayList<>();
+        filteredModelList.clear();
         for (Note model : models) {
             final String text = model.gettitle().concat(" ").concat(model.getDesc()).toLowerCase();
             if (text.contains(query)) {
@@ -566,7 +562,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         recyclerAdapter = new RecyclerAdapter(filteredModelList);
         recyclerView.setAdapter(recyclerAdapter);
         recyclerAdapter.notifyDataSetChanged();
-        FILTER = "SEARCH";
+    }
+
+    public interface ClickListener {
+        void onClick(View view, int position);
+
+        void onLongClick(View view, int position);
     }
 
 }

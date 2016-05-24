@@ -13,21 +13,20 @@
             xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
             xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/coordinator"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fitsSystemWindows="true"
-            android:id="@+id/coordinator"
-            >
+            android:fitsSystemWindows="true">
 
 
                 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                     xmlns:app="http://schemas.android.com/apk/res-auto"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    app:layout_behavior="@string/appbar_scrolling_view_behavior"
                     android:background="@color/colorAccentSecondary"
-                    android:transitionName="@string/transition_name">
+                    android:orientation="vertical"
+                    android:transitionName="@string/transition_name"
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior">
                     <!--android:background="#5c6bc0"-->
 
                     <android.support.design.widget.TextInputLayout
@@ -41,7 +40,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_margin="15dp"
-                            android:hint="Title"
+                            android:hint="@string/title"
                             android:inputType="text"
                             android:maxLines="1"
                             android:textSize="20sp"
@@ -58,7 +57,7 @@
                             android:layout_height="match_parent"
                             android:layout_margin="15dp"
                             android:gravity="top|left"
-                            android:hint="Note"
+                            android:hint="@string/note"
                             android:inputType="textMultiLine"
                             android:textSize="25sp"/>
                     </android.support.design.widget.TextInputLayout>
