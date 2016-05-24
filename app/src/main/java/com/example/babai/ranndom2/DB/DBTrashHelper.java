@@ -13,7 +13,7 @@ public class DBTrashHelper extends SQLiteOpenHelper {
     public static final String COL_NOTE_TITLE = "_title";
     public static final String COL_NOTE_DESC = "_description";
     public static final String COL_NOTE_DATE = "_date";
-    static final String[] columns = new String[]{DBHelper.COL_EMP_ID,
+    static final String[] columns = new String[]{DBHelper.COL_ID,
             DBHelper.COL_NOTE_TITLE, DBHelper.COL_NOTE_DESC,
             DBHelper.COL_NOTE_DATE};
     //Database Information

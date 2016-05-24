@@ -44,7 +44,7 @@ public class DBController {
 
         database = DBHelper.getReadableDatabase();
 
-        Cursor cursor = database.query(com.example.babai.ranndom2.DB.DBHelper.TABLE_NAME, com.example.babai.ranndom2.DB.DBHelper.columns, com.example.babai.ranndom2.DB.DBHelper.COL_EMP_ID + " =?", new String[]{String.valueOf(_id)}, null, null, null);
+        Cursor cursor = database.query(com.example.babai.ranndom2.DB.DBHelper.TABLE_NAME, com.example.babai.ranndom2.DB.DBHelper.columns, com.example.babai.ranndom2.DB.DBHelper.COL_ID + " =?", new String[]{String.valueOf(_id)}, null, null, null);
         if (cursor != null) {
             cursor.moveToFirst();
         }
@@ -95,7 +95,7 @@ public class DBController {
         values.put(com.example.babai.ranndom2.DB.DBHelper.COL_NOTE_DATE, note.getDate());
 
         // updating row
-        return db.update(com.example.babai.ranndom2.DB.DBHelper.TABLE_NAME, values, com.example.babai.ranndom2.DB.DBHelper.COL_EMP_ID + " = ?",
+        return db.update(com.example.babai.ranndom2.DB.DBHelper.TABLE_NAME, values, com.example.babai.ranndom2.DB.DBHelper.COL_ID + " = ?",
                 new String[]{String.valueOf(note.getId())});
     }
 
@@ -103,7 +103,7 @@ public class DBController {
     public void deleteNote(Note note) {
         SQLiteDatabase db = DBHelper.getWritableDatabase();
 
-        db.delete(com.example.babai.ranndom2.DB.DBHelper.TABLE_NAME, com.example.babai.ranndom2.DB.DBHelper.COL_EMP_ID + " = ?",
+        db.delete(com.example.babai.ranndom2.DB.DBHelper.TABLE_NAME, com.example.babai.ranndom2.DB.DBHelper.COL_ID + " = ?",
                 new String[]{String.valueOf(note.getId())});
 
         System.out.println("Record Deleted");
@@ -114,7 +114,7 @@ public class DBController {
     public void deleteNote(int _id) {
         SQLiteDatabase db = DBHelper.getWritableDatabase();
 
-        db.delete(com.example.babai.ranndom2.DB.DBHelper.TABLE_NAME, com.example.babai.ranndom2.DB.DBHelper.COL_EMP_ID + " = ?",
+        db.delete(com.example.babai.ranndom2.DB.DBHelper.TABLE_NAME, com.example.babai.ranndom2.DB.DBHelper.COL_ID + " = ?",
                 new String[]{String.valueOf(_id)});
         db.close();
     }

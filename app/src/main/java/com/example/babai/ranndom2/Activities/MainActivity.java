@@ -77,6 +77,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     DBController dbController;
     DBTrashController dbTrashController;
     SearchView searchView;
+    String FILTER;
+    ArrayList<Note> filteredModelList;
 
 
 
@@ -87,6 +89,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getPermissions();
+        FILTER = "NOTES";
 
         firstView = true;
         frameLayout = (FrameLayout) findViewById(R.id.frameLayout);
@@ -173,8 +176,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
                 Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
-                intent.putExtra("title", notes.get(position).gettitle());
-                intent.putExtra("desc", notes.get(position).getDesc());
+                if (FILTER.equals("NOTES")){
+                    intent.putExtra("title", notes.get(position).gettitle());
+                    intent.putExtra("desc", notes.get(position).getDesc());
+
+                }
+                else {
+                    intent.putExtra("title", filteredModelList.get(position).gettitle());
+                    intent.putExtra("desc", filteredModelList.get(position).getDesc());
+                }
                 intent.putExtra("position",position);
                 String transitionName = getString(R.string.transition_name);
                 View cardView;
@@ -533,16 +543,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (resultCode==RESULT_OK)
         {
-            /*int index= data.getIntExtra("position",-1);
-            Note note = notes.get(index);
-            dbController.deleteNote(note);
-            notes.remove(index);
-            note = new Note(data.getStringExtra("title"),data.getStringExtra("desc"));
-            Date date = new Date();
-            String Date= DateFormat.getDateInstance().format(date);
-            note.setDate(Date);
-            notes.add(index,note);
-            dbController.addNote(note);*/
             int index= data.getIntExtra("position",-1);
             notes.get(index).settitle(data.getStringExtra("title"));
             notes.get(index).setDesc(data.getStringExtra("desc"));
@@ -555,7 +555,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void filter(List<Note> models, String query) {
         query = query.toLowerCase();
 
-        final ArrayList<Note> filteredModelList = new ArrayList<>();
+        filteredModelList = new ArrayList<>();
         for (Note model : models) {
             final String text = model.gettitle().concat(" ").concat(model.getDesc()).toLowerCase();
             if (text.contains(query)) {
@@ -566,6 +566,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         recyclerAdapter = new RecyclerAdapter(filteredModelList);
         recyclerView.setAdapter(recyclerAdapter);
         recyclerAdapter.notifyDataSetChanged();
+        FILTER = "SEARCH";
     }
 
 }
