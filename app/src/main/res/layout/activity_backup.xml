@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -14,8 +15,7 @@
             android:layout_margin="16dp"
             android:layout_marginBottom="16dp"
             android:text="@string/drive_backup_text"
-            android:textColor="#000000" />
-
+            android:textColor="#000000"/>
         <Button
             android:id="@+id/activity_backup_drive_button_backup"
             android:layout_width="wrap_content"
@@ -24,7 +24,7 @@
             android:background="@color/colorAccentSecondary"
             android:padding="16dp"
             android:text="@string/backup_now"
-            android:textColor="#80000000" />
+            android:textColor="#80000000"/>
 
         <LinearLayout
             android:id="@+id/activity_backup_drive_button_folder"
@@ -33,7 +33,6 @@
             android:background="?android:attr/selectableItemBackground"
             android:orientation="horizontal"
             android:paddingTop="8dp">
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -43,8 +42,8 @@
                 android:text="@string/backup_folder"
                 android:textColor="#000000"
                 android:textSize="18sp"
-                android:textStyle="bold" />
-
+                android:textStyle="bold"
+                />
             <TextView
                 android:id="@+id/activity_backup_drive_textview_folder"
                 android:layout_width="match_parent"
@@ -52,9 +51,8 @@
                 android:layout_margin="8dp"
                 android:gravity="right"
                 android:paddingRight="16dp"
-                android:text="@string/na" />
+                android:text="@string/na"/>
         </LinearLayout>
-
         <TextView
             android:id="@+id/activity_backup_drive_button_manage_drive"
             android:layout_width="wrap_content"
@@ -68,7 +66,6 @@
             android:textSize="12sp"
             android:textStyle="bold"
             android:visibility="gone" />
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -77,8 +74,8 @@
             android:textAllCaps="true"
             android:textColor="#000000"
             android:textSize="18sp"
-            android:textStyle="bold" />
-
+            android:textStyle="bold"
+            />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -88,11 +85,12 @@
             android:textAllCaps="true"
             android:textColor="#000000"
             android:textSize="12sp"
-            android:textStyle="bold" />
-
+            android:textStyle="bold"
+            />
         <com.github.paolorotolo.expandableheightlistview.ExpandableHeightListView
             android:id="@+id/activity_backup_drive_listview_restore"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"></com.github.paolorotolo.expandableheightlistview.ExpandableHeightListView>
+            android:layout_height="wrap_content">
+        </com.github.paolorotolo.expandableheightlistview.ExpandableHeightListView>
     </LinearLayout>
 </ScrollView>
