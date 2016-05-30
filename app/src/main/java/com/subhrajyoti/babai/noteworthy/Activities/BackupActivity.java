@@ -64,7 +64,7 @@ public class BackupActivity extends AppCompatActivity {
 
     private Backup backup;
     private GoogleApiClient mGoogleApiClient;
-    private String TAG = "glucosio_drive_backup";
+    private String TAG = "notes_drive_backup";
     private Button backupButton;
     private TextView manageButton;
     private TextView folderTextView;
