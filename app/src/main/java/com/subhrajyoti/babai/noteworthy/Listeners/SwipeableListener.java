@@ -19,32 +19,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-
-/**
- * A {@link View.OnTouchListener} that makes the list items in a {@link android.support.v7.widget.RecyclerView}
- * dismissable by swiping.
- * <p/>
- * <p>Example usage:</p>
- * <p/>
- * <pre>
- * SwipeDismissRecyclerViewTouchListener touchListener =
- *         new SwipeDismissRecyclerViewTouchListener(
- *                 listView,
- *                 new SwipeDismissRecyclerViewTouchListener.OnDismissCallback() {
- *                     public void onDismiss(ListView listView, int[] reverseSortedPositions) {
- *                         for (int position : reverseSortedPositions) {
- *                             adapter.remove(adapter.getItem(position));
- *                         }
- *                         adapter.notifyDataSetChanged();
- *                     }
- *                 });
- * listView.setOnTouchListener(touchListener);
- * listView.setOnScrollListener(touchListener.makeScrollListener());
- * </pre>
- * <p/>
- * <p>This class Requires API level 12 or later due to use of {@link
- * android.view.ViewPropertyAnimator}.</p>
- */
 public class SwipeableListener implements RecyclerView.OnItemTouchListener {
     // Cached ViewConfiguration and system-wide constant values
     private int mSlop;
@@ -72,12 +46,6 @@ public class SwipeableListener implements RecyclerView.OnItemTouchListener {
     private boolean mPaused;
     private float mFinalDelta;
 
-    /**
-     * Constructs a new swipe touch listener for the given {@link android.support.v7.widget.RecyclerView}
-     *
-     * @param recyclerView The recycler view whose items should be dismissable by swiping.
-     * @param listener     The listener for the swipe events.
-     */
     public SwipeableListener(RecyclerView recyclerView, SwipeListener listener) {
         ViewConfiguration vc = ViewConfiguration.get(recyclerView.getContext());
         mSlop = vc.getScaledTouchSlop();
@@ -89,28 +57,8 @@ public class SwipeableListener implements RecyclerView.OnItemTouchListener {
         mSwipeListener = listener;
 
 
-        /**
-         * This will ensure that this SwipeableRecyclerViewTouchListener is paused during list view scrolling.
-         * If a scroll listener is already assigned, the caller should still pass scroll changes through
-         * to this listener.
-         */
-        /*mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                setEnabled(newState != RecyclerView.SCROLL_STATE_DRAGGING);
-            }
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-            }
-        });*/
     }
 
-    /**
-     * Enables or disables (pauses or resumes) watching for swipe-to-dismiss gestures.
-     *
-     * @param enabled Whether or not to watch for gestures.
-     */
     public void setEnabled(boolean enabled) {
         mPaused = !enabled;
     }
@@ -350,27 +298,13 @@ public class SwipeableListener implements RecyclerView.OnItemTouchListener {
     }
 
     public interface SwipeListener {
-        /**
-         * Called to determine whether the given position can be swiped.
-         */
+
         boolean canSwipe(int position);
 
-        /**
-         * Called when the item has been dismissed by swiping to the left.
-         *
-         * @param recyclerView           The originating {@link android.support.v7.widget.RecyclerView}.
-         * @param reverseSortedPositions An array of positions to dismiss, sorted in descending
-         *                               order for convenience.
-         */
+
         void onDismissedBySwipeLeft(RecyclerView recyclerView, int[] reverseSortedPositions);
 
-        /**
-         * Called when the item has been dismissed by swiping to the right.
-         *
-         * @param recyclerView           The originating {@link android.support.v7.widget.RecyclerView}.
-         * @param reverseSortedPositions An array of positions to dismiss, sorted in descending
-         *                               order for convenience.
-         */
+
         void onDismissedBySwipeRight(RecyclerView recyclerView, int[] reverseSortedPositions);
     }
 
