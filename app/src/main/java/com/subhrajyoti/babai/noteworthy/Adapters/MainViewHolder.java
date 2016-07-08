@@ -13,14 +13,14 @@ public class MainViewHolder extends RecyclerView.ViewHolder implements View.OnCl
     CardView cv;
     TextView title;
     ImageView imageView;
-    TextView dateview;
+    TextView dateView;
 
     MainViewHolder(View itemView) {
         super(itemView);
         cv = (CardView) itemView.findViewById(R.id.card_view);
         title = (TextView) itemView.findViewById(R.id.title);
         imageView = (ImageView) itemView.findViewById(R.id.letter_head);
-        dateview = (TextView) itemView.findViewById(R.id.dateView);
+        dateView = (TextView) itemView.findViewById(R.id.dateView);
 
     }
 

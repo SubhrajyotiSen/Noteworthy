@@ -365,16 +365,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.offline:
                 new MaterialDialog.Builder(this)
-                        .title("Backup/Restore")
-                        .content("Backup your notes locally so that you can retrieve later")
-                        .positiveText("Backup")
-                        .negativeText("Restore")
-                        .neutralText("Cancel")
+                        .title(R.string.backup_title)
+                        .content(R.string.backup_content)
+                        .positiveText(R.string.backup_button)
+                        .negativeText(R.string.restore)
+                        .neutralText(R.string.cancel)
                         .onPositive(new MaterialDialog.SingleButtonCallback() {
                             @Override
                             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                 boolean result = SaveDB.save();
-                                Toast.makeText(MainActivity.this, result ? "Backup successful" : "Backup unsuccessful", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(MainActivity.this, result ? getString(R.string.backup_success) : getString(R.string.backup_fail), Toast.LENGTH_SHORT).show();
 
                             }
                         })
@@ -382,7 +382,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             @Override
                             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                 boolean result = RestoreDB.importDB();
-                                Toast.makeText(MainActivity.this, result ? "Restore successful" : "Restore unsuccessful", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(MainActivity.this, result ? getString(R.string.restore_success) : getString(R.string.restore_fail), Toast.LENGTH_SHORT).show();
                                 if (result) {
                                     notes.clear();
                                     getNotes();
@@ -395,7 +395,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.about:
                 new MaterialDialog.Builder(this)
                         .title("NoteWorthy v1.0.0")
-                        .content( ((Build.VERSION.SDK_INT >= 24)) ? Html.fromHtml("<p>Check out the project on <a href=\"https://github.com/SubhrajyotiSen/Noteworthy\">GitHub</a></p>",Html.FROM_HTML_MODE_LEGACY) : Html.fromHtml("<p>Check out the project on <a href=\"https://github.com/SubhrajyotiSen/Noteworthy\">GitHub</a></p>"))
+                        .content( ((Build.VERSION.SDK_INT >= 24)) ? Html.fromHtml(getString(R.string.html_text),Html.FROM_HTML_MODE_LEGACY) : Html.fromHtml("<p>Check out the project on <a href=\"https://github.com/SubhrajyotiSen/Noteworthy\">GitHub</a></p>"))
                         .titleGravity(GravityEnum.CENTER)
                         .contentGravity(GravityEnum.CENTER)
                         .icon(ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_launcher, null))
@@ -559,6 +559,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         void onClick(View view, int position);
 
         void onLongClick(View view, int position);
+    }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        dbController.close();
     }
 
 }

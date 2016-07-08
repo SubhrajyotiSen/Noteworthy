@@ -25,6 +25,7 @@
                     android:layout_height="match_parent"
                     android:background="@color/colorAccentSecondary"
                     android:orientation="vertical"
+                    android:transitionName="@string/transition_name"
                     app:layout_behavior="@string/appbar_scrolling_view_behavior">
                     <!--android:background="#5c6bc0"-->
 
@@ -55,7 +56,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_margin="15dp"
-                            android:gravity="top|left"
+                            android:gravity="top|start"
                             android:hint="@string/note"
                             android:inputType="textMultiLine"
                             android:textSize="25sp"/>

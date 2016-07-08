@@ -238,4 +238,11 @@ public class TrashActivity extends AppCompatActivity implements SearchView.OnQue
         recyclerAdapter.notifyDataSetChanged();
     }
 
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        dbController.close();
+        dbTrashController.close();
+    }
+
 }

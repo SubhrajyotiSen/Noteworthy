@@ -40,7 +40,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<MainViewHolder> {
         mainViewHolder.title.setText(notes.get(i).gettitle());
         TextDrawable drawable = TextDrawable.builder().buildRound(String.valueOf(notes.get(i).gettitle().charAt(0)).toUpperCase(), generator.getColor(notes.get(i).gettitle()));
         mainViewHolder.imageView.setImageDrawable(drawable);
-        mainViewHolder.dateview.setText(notes.get(i).getDate());
+        mainViewHolder.dateView.setText(notes.get(i).getDate());
 
     }
 

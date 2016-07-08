@@ -35,32 +35,15 @@ public class DBTrashController {
         values.put(com.subhrajyoti.babai.noteworthy.DB.DBTrashHelper.COL_NOTE_DATE, note.getDate());
 
         database.insert(com.subhrajyoti.babai.noteworthy.DB.DBTrashHelper.TABLE_NAME, null, values);
-
-        System.out.println("Record Added");
         database.close();
     }
 
-    public Note getNote(int _id) {
 
-        database = DBTrashHelper.getReadableDatabase();
-
-        Cursor cursor = database.query(com.subhrajyoti.babai.noteworthy.DB.DBTrashHelper.TABLE_NAME, com.subhrajyoti.babai.noteworthy.DB.DBTrashHelper.columns, com.subhrajyoti.babai.noteworthy.DB.DBTrashHelper.COL_EMP_ID + " =?", new String[]{String.valueOf(_id)}, null, null, null);
-        if (cursor != null) {
-            cursor.moveToFirst();
-        }
-        assert cursor != null;
-        Note note = new Note(Integer.parseInt(cursor.getString(0)), cursor.getString(1),
-                cursor.getString(2), cursor.getString(3));
-        cursor.close();
-
-        return note;
-    }
-
-    // Getting All Employees
+    // Getting All notes
     public List<Note> getAllNotes() {
         SQLiteDatabase db = DBTrashHelper.getWritableDatabase();
 
-        List<Note> contactList = new ArrayList<>();
+        List<Note> noteList = new ArrayList<>();
         // Select All Query
         String selectQuery = "SELECT  * FROM " + com.subhrajyoti.babai.noteworthy.DB.DBTrashHelper.TABLE_NAME;
 
@@ -74,48 +57,23 @@ public class DBTrashController {
                 note.settitle(cursor.getString(1));
                 note.setDesc(cursor.getString(2));
                 note.setDate(cursor.getString(3));
-                // Adding contact to list
-                contactList.add(note);
+                // Adding note to list
+                noteList.add(note);
             } while (cursor.moveToNext());
         }
         cursor.close();
 
-        // return contact list
-        return contactList;
+        // return note list
+        return noteList;
     }
 
-    // Updating single employee
-    public int updateNote(Note note) {
-        SQLiteDatabase db = DBTrashHelper.getWritableDatabase();
-
-        ContentValues values = new ContentValues();
-
-        values.put(com.subhrajyoti.babai.noteworthy.DB.DBTrashHelper.COL_NOTE_TITLE, note.gettitle());
-        values.put(com.subhrajyoti.babai.noteworthy.DB.DBTrashHelper.COL_NOTE_DESC, note.getDesc());
-        values.put(com.subhrajyoti.babai.noteworthy.DB.DBTrashHelper.COL_NOTE_DATE, note.getDate());
-
-        // updating row
-        return db.update(com.subhrajyoti.babai.noteworthy.DB.DBTrashHelper.TABLE_NAME, values, com.subhrajyoti.babai.noteworthy.DB.DBTrashHelper.COL_EMP_ID + " = ?",
-                new String[]{String.valueOf(note.getId())});
-    }
-
-    // Deleting single employee
+    // Deleting single note
     public void deleteNote(Note note) {
         SQLiteDatabase db = DBTrashHelper.getWritableDatabase();
 
         db.delete(com.subhrajyoti.babai.noteworthy.DB.DBTrashHelper.TABLE_NAME, com.subhrajyoti.babai.noteworthy.DB.DBTrashHelper.COL_EMP_ID + " = ?",
                 new String[]{String.valueOf(note.getId())});
-
-        System.out.println("Record Deleted");
         db.close();
     }
 
-    // Deleting single employee
-    public void deleteNote(int _id) {
-        SQLiteDatabase db = DBTrashHelper.getWritableDatabase();
-
-        db.delete(com.subhrajyoti.babai.noteworthy.DB.DBTrashHelper.TABLE_NAME, com.subhrajyoti.babai.noteworthy.DB.DBTrashHelper.COL_EMP_ID + " = ?",
-                new String[]{String.valueOf(_id)});
-        db.close();
-    }
 }

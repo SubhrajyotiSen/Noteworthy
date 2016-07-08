@@ -22,10 +22,6 @@ public class BackupAdapter extends ArrayAdapter<NoteBackup> {
     private Context context;
     private FormatDateTime formatDateTime;
 
-    public BackupAdapter(Context context, int textViewResourceId) {
-        super(context, textViewResourceId);
-    }
-
     public BackupAdapter(Context context, int resource, List<NoteBackup> items) {
         super(context, resource, items);
         this.context = context;
