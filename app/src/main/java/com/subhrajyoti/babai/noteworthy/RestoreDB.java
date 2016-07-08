@@ -15,7 +15,7 @@ public class RestoreDB {
             File sd = Environment.getExternalStorageDirectory();
             File data = Environment.getDataDirectory();
             if (sd.canWrite()) {
-                String currentDBPath = "//data//" + "com.example.babai.ranndom2"
+                String currentDBPath = "//data//" + "com.subhrajyoti.noteworthy"
                         + "//databases//" + "notes.db";
                 String backupDBPath = "/NotesBackup.db"; // From SD directory.
                 File backupDB = new File(data, currentDBPath);

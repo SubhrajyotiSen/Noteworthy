@@ -15,7 +15,7 @@ public class SaveDB{
             File data = Environment.getDataDirectory();
 
             if (sd.canWrite()) {
-                String currentDBPath = "//data//" + "com.example.babai.ranndom2"
+                String currentDBPath = "//data//" + "com.subhrajyoti.noteworthy"
                         + "//databases//" + "notes.db";
                 String backupDBPath = "/NotesBackup.db";
                 File currentDB = new File(data, currentDBPath);
