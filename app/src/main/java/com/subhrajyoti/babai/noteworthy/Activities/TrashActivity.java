@@ -49,6 +49,7 @@ public class TrashActivity extends AppCompatActivity implements SearchView.OnQue
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Trash");
         setSupportActionBar(toolbar);
+        assert getSupportActionBar()!=null;
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
@@ -192,26 +193,6 @@ public class TrashActivity extends AppCompatActivity implements SearchView.OnQue
         }
     }
 
-    private void shareIt(int pos) {
-        Intent sharing = new Intent(Intent.ACTION_SEND);
-        sharing.setType("text/plain");
-        sharing.putExtra(Intent.EXTRA_TEXT, notes
-                .get(pos).gettitle() + "\n\n" + notes.get(pos).getDesc());
-        startActivity(Intent.createChooser(sharing, "Share via"));
-    }
-
-    private void addNote(String s1, String s2)  {
-        Date date = new Date();
-        String Date= DateFormat.getDateInstance().format(date);
-        Note note = new Note(s1, s2);
-        note.setDate(Date);
-        dbTrashController.addNote(note);
-        notes.add(note);
-        recyclerAdapter.notifyDataSetChanged();
-
-    }
-
-
 
     private void getNotes(){
         List<Note> notes2 = dbTrashController.getAllNotes();
@@ -219,16 +200,6 @@ public class TrashActivity extends AppCompatActivity implements SearchView.OnQue
             notes.add(notes2.get(i));
         }
 
-    }
-
-
-
-
-    public void hideSoftKeyboard() {
-        if(getCurrentFocus()!=null) {
-            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-            inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-        }
     }
 
     @Override

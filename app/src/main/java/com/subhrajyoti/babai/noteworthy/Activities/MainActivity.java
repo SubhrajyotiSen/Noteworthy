@@ -2,6 +2,7 @@ package com.subhrajyoti.babai.noteworthy.Activities;
 
 import android.Manifest;
 import android.animation.Animator;
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
@@ -65,10 +66,6 @@ import io.codetail.animation.SupportAnimator;
 import io.codetail.animation.ViewAnimationUtils;
 import io.codetail.animation.arcanimator.ArcAnimator;
 import io.codetail.animation.arcanimator.Side;
-
-import static android.support.design.R.styleable.FloatingActionButton;
-import static android.support.design.R.styleable.NavigationView;
-import static android.support.design.R.styleable.SearchView;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,SearchView.OnQueryTextListener {
 
@@ -270,13 +267,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 animator.start();
                 fab.setImageResource(R.drawable.ic_done_white_24dp);
                 fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary)));
-                /*if(editText1.requestFocus()) {
-                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.showSoftInput(editText1, InputMethodManager.SHOW_IMPLICIT);
-                }*/
 
                 firstView = false;
-                //first.setVisibility(View.INVISIBLE);
             } else {
                 animator_reverse.addListener(new SupportAnimator.AnimatorListener() {
 
@@ -297,7 +289,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             addNote(s1,s2);
 
                         } else {
-                            Toast.makeText(getApplicationContext(), "Please enter a valid note", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), R.string.empty_note_message, Toast.LENGTH_LONG).show();
                         }
 
                         fab.setImageResource(R.drawable.ic_mode_edit_black_24dp);
@@ -325,10 +317,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 second.setVisibility(View.VISIBLE);
                 first.setVisibility(View.INVISIBLE);
                 anim.start();
-                /*if(editText1.requestFocus()) {
-                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.showSoftInput(editText1, InputMethodManager.SHOW_IMPLICIT);
-                }*/
 
                 fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary)));
                 fab.setImageResource(R.drawable.ic_done_white_24dp);
@@ -342,7 +330,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                     @Override
                     public void onAnimationEnd(Animator animation) {
-                                /*super.onAnimationEnd(animation);*/
                         second.setVisibility(View.INVISIBLE);
                         first.setVisibility(View.VISIBLE);
                         hideSoftKeyboard();
@@ -408,7 +395,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.about:
                 new MaterialDialog.Builder(this)
                         .title("NoteWorthy v1.0.0")
-                        .content(Html.fromHtml("<p>Check out the project on <a href=\"https://github.com/SubhrajyotiSen/Noteworthy\">GitHub</a></p>"))
+                        .content( ((Build.VERSION.SDK_INT >= 24)) ? Html.fromHtml("<p>Check out the project on <a href=\"https://github.com/SubhrajyotiSen/Noteworthy\">GitHub</a></p>",Html.FROM_HTML_MODE_LEGACY) : Html.fromHtml("<p>Check out the project on <a href=\"https://github.com/SubhrajyotiSen/Noteworthy\">GitHub</a></p>"))
                         .titleGravity(GravityEnum.CENTER)
                         .contentGravity(GravityEnum.CENTER)
                         .icon(ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_launcher, null))
