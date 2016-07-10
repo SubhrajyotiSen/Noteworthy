@@ -2,7 +2,6 @@ package com.subhrajyoti.babai.noteworthy.Activities;
 
 import android.Manifest;
 import android.animation.Animator;
-import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
@@ -69,6 +68,7 @@ import io.codetail.animation.arcanimator.Side;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,SearchView.OnQueryTextListener {
 
+    //Declare views and bind views
     @Bind(R.id.fab)
     FloatingActionButton fab;
     @Bind(R.id.drawer_layout)
@@ -81,62 +81,81 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     LinearLayout second;
     @Bind(R.id.coordinator)
     View coordinatorView;
-    LinearLayoutManager linearLayoutManager;
     @Bind(R.id.frameLayout)
     FrameLayout frameLayout;
-    DBController dbController;
-    DBTrashController dbTrashController;
-    SearchView searchView;
-    ArrayList<Note> filteredModelList;
-    RecyclerAdapter recyclerAdapter;
-    ArrayList<Note> notes;
+    private LinearLayoutManager linearLayoutManager;
+    private DBController dbController;
+    private DBTrashController dbTrashController;
+    private SearchView searchView;
+    private ArrayList<Note> filteredModelList;
+    private RecyclerAdapter recyclerAdapter;
+    private ArrayList<Note> notes;
     private boolean firstView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //setup toolbar
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        //get runtime permissions
         getPermissions();
 
+        //Mandatory ButterKnife bind
         ButterKnife.bind(this);
 
+        //initially the first view is visible
         firstView = true;
+
+        //animation for FAB
         Animation animation = AnimationUtils.loadAnimation(this, R.anim.simple_grow);
         fab.startAnimation(animation);
+
+        //listener for FAB
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (firstView)
+                if (firstView) //check with which view is visible
+                    //start arc animation of FAB
                     ArcTime();
                 else
+                    //execute for normal FAB click
                     fabPressed();
             }
         });
+
+        //initialize database objects
         dbController = new DBController(this);
         dbTrashController = new DBTrashController(this);
 
-
+        //make second view invisible
         second.setVisibility(View.INVISIBLE);
 
+        //add navigation drawer toggle
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         assert navigationView != null;
         navigationView.setNavigationItemSelectedListener(this);
 
+        //initialize and set LinearLayout properties
         linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setReverseLayout(true);
         linearLayoutManager.setStackFromEnd(true);
 
         recyclerView.setLayoutManager(linearLayoutManager);
+
+        //initialize notes ArrayList
         try{
             notes = new ArrayList<>();
             filteredModelList = new ArrayList<>();
+
+            //fetch the notes from database
             getNotes();
         }
         catch(Exception e) {
@@ -145,6 +164,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
+        //listener for swipe on RecyclerView items
         SwipeableListener swipeTouchListener =
                 new SwipeableListener(recyclerView,
                         new SwipeableListener.SwipeListener() {
@@ -155,18 +175,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                             @Override
                             public void onDismissedBySwipeLeft(RecyclerView recyclerView, int[] reverseSortedPositions) {
-                                for (final int position : reverseSortedPositions) {
-
+                                //remove all swiped items
+                                for (final int position : reverseSortedPositions)
                                     removeOnSwipe(position);
-                                }
                                 recyclerAdapter.notifyDataSetChanged();
                             }
 
                             @Override
                             public void onDismissedBySwipeRight(RecyclerView recyclerView, int[] reverseSortedPositions) {
-                                for (final int position : reverseSortedPositions) {
+                                //remove all swiped items
+                                for (final int position : reverseSortedPositions)
                                     removeOnSwipe(position);
-                                }
                                 recyclerAdapter.notifyDataSetChanged();
                             }
                         });
@@ -179,7 +198,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onClick(View view, int position) {
 
-
+                //intent to start viewing and editing activity
                 Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
                 intent.putExtra("title", filteredModelList.get(position).gettitle());
                 intent.putExtra("desc", filteredModelList.get(position).getDesc());
@@ -198,9 +217,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             @Override
             public void onLongClick(View view, int position) {
-
+                //share the note
                 shareIt(position);
-
             }
         }));
 
@@ -211,10 +229,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         assert drawer != null;
         if (drawer.isDrawerOpen(GravityCompat.START)) {
+            //if drawer is open, close it when back button is pressed
             drawer.closeDrawer(GravityCompat.START);
         } else if (!firstView) {
             fabPressed();
         } else {
+            //default back press behavior
             super.onBackPressed();
         }
     }
@@ -236,45 +256,61 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return super.onOptionsItemSelected(item);
     }
 
-    public void fabPressed() {
+    //function for fab click
+    private void fabPressed() {
 
+        //retrieve note title and content
         final EditText editText1 = (EditText) findViewById(R.id.title_text);
         final EditText editText2 = (EditText) findViewById(R.id.desc_text);
         assert editText1 != null;
         final String s1 = editText1.getText().toString();
         assert editText2 != null;
         final String s2 = editText2.getText().toString();
+
+        //get positions for animation
         final int cx2 =  fab.getLeft();
         final int cx = (frameLayout.getLeft()+frameLayout.getRight())/2;
         final int cy2 = fab.getTop();
         final int cy = (frameLayout.getTop()+frameLayout.getBottom())/2;
         final int radius = Math.max(second.getWidth(), second.getHeight());
+
+        //final position of FAB after arc animation
         fab.setX(cx2);
         fab.setY(cy2);
         searchView.onActionViewCollapsed();
+
+        //check is Android version is KitKat or below
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
 
+            //set up circular reveal animator
             SupportAnimator animator =
                     ViewAnimationUtils.createCircularReveal(second, cx, cy, 0, radius);
             animator.setInterpolator(new AccelerateDecelerateInterpolator());
             animator.setDuration(200);
+
+            //animator for reverse reveal animation
             SupportAnimator animator_reverse = animator.reverse();
 
+            //check if first view is visible
             if (firstView) {
 
                 second.setVisibility(View.VISIBLE);
                 first.setVisibility(View.INVISIBLE);
                 animator.start();
+
+                //change FAB appearance
                 fab.setImageResource(R.drawable.ic_done_white_24dp);
                 fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary)));
 
+                //denote that second view is visible now
                 firstView = false;
-            } else {
+            }
+            //if second view is visible
+            else {
                 animator_reverse.addListener(new SupportAnimator.AnimatorListener() {
 
                     @Override
                     public void onAnimationStart() {
-
                     }
 
                     @Override
@@ -311,13 +347,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 animator_reverse.start();
             }
 
-        } else {
+        }
+        //if Android version is Lollipop and above
+        else {
             if (firstView) {
                 Animator anim = android.view.ViewAnimationUtils.createCircularReveal(second, cx, cy, 0, radius);
                 second.setVisibility(View.VISIBLE);
                 first.setVisibility(View.INVISIBLE);
                 anim.start();
-
                 fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary)));
                 fab.setImageResource(R.drawable.ic_done_white_24dp);
 
@@ -338,7 +375,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             editText2.setText("");
                             addNote(s1,s2);
                         } else {
-                            Toast.makeText(getApplicationContext(), "Please enter a valid note", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), R.string.empty_note_message, Toast.LENGTH_LONG).show();
                         }
 
                         fab.setImageResource(R.drawable.ic_mode_edit_black_24dp);
@@ -360,9 +397,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         switch (id) {
+
+            //online backup option
             case R.id.online:
                 startActivity(new Intent(MainActivity.this, BackupActivity.class));
                 break;
+
+            //local backup option
             case R.id.offline:
                 new MaterialDialog.Builder(this)
                         .title(R.string.backup_title)
@@ -392,6 +433,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         })
                         .show();
                 break;
+
+            //about option
             case R.id.about:
                 new MaterialDialog.Builder(this)
                         .title("NoteWorthy v1.0.0")
@@ -402,13 +445,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .show();
 
                 break;
+
+            //trash option
             case R.id.trash:
                 startActivity(new Intent(MainActivity.this,TrashActivity.class));
 
 
         }
-
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         assert drawer != null;
         drawer.closeDrawer(GravityCompat.START);
@@ -417,6 +460,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onQueryTextSubmit(String query) {
+        //clear focus  from the SearchView after searching done
         searchView.clearFocus();
         return true;
     }
@@ -428,12 +472,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
+    //remove a note after being swiped
     private void removeOnSwipe(final int position) {
         final Note note = notes.get(position);
         final boolean[] isDeleted = new boolean[1];
         isDeleted[0] = true;
         notes.remove(position);
         recyclerAdapter.notifyDataSetChanged();
+        //show snackbar
         Snackbar.make(coordinatorView, "'" + note.gettitle() + "' was removed", Snackbar.LENGTH_LONG)
                 .setAction("Undo", new View.OnClickListener() {
                     @Override
@@ -444,12 +490,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         recyclerAdapter.notifyDataSetChanged();
                     }
                 }).show();
+        //check if deletion was undo'd
         if (isDeleted[0]){
             dbController.deleteNote(note);
             dbTrashController.addNote(note);
         }
     }
 
+    //function to share a note
     private void shareIt(int pos) {
         Intent sharing = new Intent(Intent.ACTION_SEND);
         sharing.setType("text/plain");
@@ -458,11 +506,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         startActivity(Intent.createChooser(sharing, "Share via"));
     }
 
+    //function to add a single note
     private void addNote(String s1, String s2)  {
         Date date = new Date();
-        String Date= DateFormat.getDateInstance().format(date);
+        //get current system time
+        String Date = DateFormat.getDateInstance().format(date);
         Note note = new Note(s1, s2);
         note.setDate(Date);
+        //add note to databse
         dbController.addNote(note);
         notes.add(note);
         filteredModelList.add(note);
@@ -473,16 +524,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
+    //function to get permissions
     private void getPermissions(){
         ArrayList<String> permissions = new ArrayList<>();
 
         int hasPermissionStorage = ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        int hasPermissionAudio = ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.RECORD_AUDIO);
 
-        if( hasPermissionAudio != PackageManager.PERMISSION_GRANTED ) {
-            permissions.add( Manifest.permission.RECORD_AUDIO );
-        }
-
+        //check if WRITE permission has been granted
         if( hasPermissionStorage != PackageManager.PERMISSION_GRANTED ) {
             permissions.add( Manifest.permission.WRITE_EXTERNAL_STORAGE );
         }
@@ -493,6 +541,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    //function to retrieve all notes
     private void getNotes(){
         List<Note> notes2 = dbController.getAllNotes();
         for (int i = 0; i < notes2.size(); i++) {
@@ -502,7 +551,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    public void ArcTime(){
+    //function to start arc movement of FAB
+    private void ArcTime() {
+
+        //get center of FAB
         final int cx = (frameLayout.getLeft()+frameLayout.getRight())/2;
         final int cy = (frameLayout.getTop()+frameLayout.getBottom())/2;
 
@@ -518,7 +570,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         arcAnimator.start();
     }
 
-    public void hideSoftKeyboard() {
+    //hide keyboard to make animations clearer
+    private void hideSoftKeyboard() {
         if(getCurrentFocus()!=null) {
             InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
             inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
@@ -529,6 +582,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        //update the edited note
         if (resultCode==RESULT_OK)
         {
             int index= data.getIntExtra("position",-1);
@@ -540,31 +594,36 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    //filter notes list based on search query
     private void filter(List<Note> models, String query) {
         query = query.toLowerCase();
         filteredModelList.clear();
+        //iterate over all notes and check if they contain the query string
         for (Note model : models) {
             final String text = model.gettitle().concat(" ").concat(model.getDesc()).toLowerCase();
             if (text.contains(query)) {
                 filteredModelList.add(model);
             }
         }
+        //reinitialize RecyclerView with search results
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerAdapter = new RecyclerAdapter(filteredModelList);
         recyclerView.setAdapter(recyclerAdapter);
         recyclerAdapter.notifyDataSetChanged();
     }
 
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        //close db connection
+        dbController.close();
+    }
+
+    //interface for click listeners
     public interface ClickListener {
         void onClick(View view, int position);
 
         void onLongClick(View view, int position);
-    }
-
-    @Override
-    public void onDestroy(){
-        super.onDestroy();
-        dbController.close();
     }
 
 }
