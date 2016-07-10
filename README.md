@@ -1,4 +1,3 @@
-#Project is currently under heavy refractoring. Please do not make any pull requests until further notice
 
 
 # Noteworthy
