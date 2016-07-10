@@ -2,6 +2,7 @@ package com.subhrajyoti.babai.noteworthy.Adapters;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,11 +10,11 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.android.gms.drive.DriveId;
 import com.subhrajyoti.babai.noteworthy.Activities.BackupActivity;
-import com.subhrajyoti.babai.noteworthy.Utils.FormatDateTime;
 import com.subhrajyoti.babai.noteworthy.Models.NoteBackup;
 import com.subhrajyoti.babai.noteworthy.R;
-import com.google.android.gms.drive.DriveId;
+import com.subhrajyoti.babai.noteworthy.Utils.FormatDateTime;
 
 import java.util.List;
 
@@ -28,8 +29,17 @@ public class BackupAdapter extends ArrayAdapter<NoteBackup> {
         formatDateTime = new FormatDateTime(context);
     }
 
+    private static String humanReadableByteCount(long bytes, boolean si) {
+        int unit = si ? 1000 : 1024;
+        if (bytes < unit) return bytes + " B";
+        int exp = (int) (Math.log(bytes) / Math.log(unit));
+        String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp - 1) + (si ? "" : "i");
+        return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
+    }
+
+    @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         View v = convertView;
 
         if (v == null) {
@@ -39,6 +49,7 @@ public class BackupAdapter extends ArrayAdapter<NoteBackup> {
         }
 
         NoteBackup p = getItem(position);
+        assert p != null;
         final DriveId driveId= p.getDriveId();
         final String modified = formatDateTime.formatDate(p.getModifiedDate());
         final String size = humanReadableByteCount(p.getBackupSize(), true);
@@ -83,13 +94,5 @@ public class BackupAdapter extends ArrayAdapter<NoteBackup> {
         });
 
         return v;
-    }
-
-    private static String humanReadableByteCount(long bytes, boolean si) {
-        int unit = si ? 1000 : 1024;
-        if (bytes < unit) return bytes + " B";
-        int exp = (int) (Math.log(bytes) / Math.log(unit));
-        String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp-1) + (si ? "" : "i");
-        return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
     }
 }

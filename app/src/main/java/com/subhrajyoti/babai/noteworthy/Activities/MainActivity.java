@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
-        //initialize database objects
+        //initialize database helpers
         dbController = new DBController(this);
         dbTrashController = new DBTrashController(this);
 
@@ -596,6 +596,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     //filter notes list based on search query
     private void filter(List<Note> models, String query) {
+        //convert query text to lower case for easier searching
         query = query.toLowerCase();
         filteredModelList.clear();
         //iterate over all notes and check if they contain the query string

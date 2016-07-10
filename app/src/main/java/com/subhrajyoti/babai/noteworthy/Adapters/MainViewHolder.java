@@ -8,12 +8,12 @@ import android.widget.TextView;
 
 import com.subhrajyoti.babai.noteworthy.R;
 
-public class MainViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,View.OnLongClickListener {
+class MainViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 
-    CardView cv;
     TextView title;
     ImageView imageView;
     TextView dateView;
+    private CardView cv;
 
     MainViewHolder(View itemView) {
         super(itemView);

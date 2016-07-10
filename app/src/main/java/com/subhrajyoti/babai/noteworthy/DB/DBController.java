@@ -37,7 +37,7 @@ public class DBController {
         database.close();
     }
 
-    // Getting All Employees
+    // Getting All notes
     public List<Note> getAllNotes() {
         SQLiteDatabase db = DBHelper.getWritableDatabase();
 

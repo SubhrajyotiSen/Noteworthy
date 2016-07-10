@@ -21,6 +21,7 @@ import butterknife.ButterKnife;
 
 public class DetailsActivity extends AppCompatActivity {
 
+    //bind views
     @Bind(R.id.titleText)
     TextView titleText;
     @Bind(R.id.detailsText)
@@ -30,15 +31,18 @@ public class DetailsActivity extends AppCompatActivity {
     @Bind(R.id.coordinator)
     CoordinatorLayout coordinatorLayout;
     private int position;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
         ButterKnife.bind(this);
 
+        //initial animation for FAB
         Animation animation = AnimationUtils.loadAnimation(this, R.anim.simple_grow);
         floatingActionButton.startAnimation(animation);
 
+        //switch drawer toggle icon with exit icon
         final Drawable cross = getResources().getDrawable(R.drawable.ic_clear_white_24dp);
         if(cross !=null){
             cross.setColorFilter(getResources().getColor(R.color.icons), PorterDuff.Mode.SRC_ATOP);
@@ -50,6 +54,8 @@ public class DetailsActivity extends AppCompatActivity {
             getSupportActionBar().setHomeAsUpIndicator(cross );
 
         }
+
+        //initialize views with data from the note
         titleText.setText(getIntent().getStringExtra("title"));
         detailsText.setText(getIntent().getStringExtra("desc"));
         position = getIntent().getIntExtra("position",-1);
@@ -69,13 +75,15 @@ public class DetailsActivity extends AppCompatActivity {
                 finish();
                 return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
-    public void update() {
 
+    //update the note
+    private void update() {
+
+        //stores the new/edited note in the intent
+        //checks if note title is empty
         if (!titleText.getText().toString().trim().equals("")) {
-
             Intent intent = new Intent();
             intent.putExtra("title",titleText.getText().toString());
             intent.putExtra("desc",detailsText.getText().toString());
@@ -89,6 +97,7 @@ public class DetailsActivity extends AppCompatActivity {
     }
     @Override
     public void onBackPressed() {
+        //update the note if back button pressed
         update();
     }
 

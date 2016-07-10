@@ -1,12 +1,12 @@
 package com.subhrajyoti.babai.noteworthy.Activities;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,7 +15,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 
 import com.subhrajyoti.babai.noteworthy.Adapters.RecyclerAdapter;
 import com.subhrajyoti.babai.noteworthy.DB.DBController;
@@ -33,28 +32,32 @@ import java.util.List;
 
 public class TrashActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
 
-    ArrayList<Note> notes;
-    RecyclerAdapter recyclerAdapter;
-    RecyclerView recyclerView;
-    View coordinatorView;
-    LinearLayoutManager linearLayoutManager;
-    DBController dbController;
-    DBTrashController dbTrashController;
-    SearchView searchView;
+    //declarations
+    private ArrayList<Note> notes;
+    private RecyclerAdapter recyclerAdapter;
+    private RecyclerView recyclerView;
+    private View coordinatorView;
+    private LinearLayoutManager linearLayoutManager;
+    private DBController dbController;
+    private DBTrashController dbTrashController;
+    private SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trash);
+
+        //set up toolbar
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Trash");
         setSupportActionBar(toolbar);
         assert getSupportActionBar()!=null;
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-
+        //initialize database helpers
         dbTrashController = new DBTrashController(this);
         dbController = new DBController(this);
+
         coordinatorView = findViewById(R.id.coordinator);
 
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
@@ -65,6 +68,7 @@ public class TrashActivity extends AppCompatActivity implements SearchView.OnQue
         recyclerView.setLayoutManager(linearLayoutManager);
         try{
             notes = new ArrayList<>();
+            //get notes
             getNotes();
         }
         catch(Exception e) {
@@ -72,6 +76,7 @@ public class TrashActivity extends AppCompatActivity implements SearchView.OnQue
         }
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
+        //listener for swipe on RecyclerView items
         SwipeableListener swipeTouchListener =
                 new SwipeableListener(recyclerView,
                         new SwipeableListener.SwipeListener() {
@@ -82,18 +87,15 @@ public class TrashActivity extends AppCompatActivity implements SearchView.OnQue
 
                             @Override
                             public void onDismissedBySwipeLeft(RecyclerView recyclerView, int[] reverseSortedPositions) {
-                                for (final int position : reverseSortedPositions) {
-
+                                for (final int position : reverseSortedPositions)
                                     removeOnSwipe(position);
-                                }
                                 recyclerAdapter.notifyDataSetChanged();
                             }
 
                             @Override
                             public void onDismissedBySwipeRight(RecyclerView recyclerView, int[] reverseSortedPositions) {
-                                for (final int position : reverseSortedPositions) {
+                                for (final int position : reverseSortedPositions)
                                     removeOnSwipe(position);
-                                }
                                 recyclerAdapter.notifyDataSetChanged();
                             }
                         });
@@ -167,12 +169,6 @@ public class TrashActivity extends AppCompatActivity implements SearchView.OnQue
         return true;
     }
 
-    public interface ClickListener {
-        void onClick(View view, int position);
-
-        void onLongClick(View view, int position);
-    }
-
     private void removeOnSwipe(final int position) {
         final Note note = notes.get(position);
         final boolean[] isDeleted = new boolean[1];
@@ -193,7 +189,7 @@ public class TrashActivity extends AppCompatActivity implements SearchView.OnQue
         }
     }
 
-
+    //function to fetch all notes from database
     private void getNotes(){
         List<Note> notes2 = dbTrashController.getAllNotes();
         for (int i = 0; i < notes2.size(); i++) {
@@ -206,8 +202,7 @@ public class TrashActivity extends AppCompatActivity implements SearchView.OnQue
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode==RESULT_OK)
-        {
+        if (resultCode == RESULT_OK) {
             int index= data.getIntExtra("position",-1);
             Note note = notes.get(index);
             dbTrashController.deleteNote(note);
@@ -222,16 +217,19 @@ public class TrashActivity extends AppCompatActivity implements SearchView.OnQue
         }
     }
 
+    //function for filtering the RecyclerView with search query
     private void filter(List<Note> models, String query) {
+        //convert query text to lower case for easier searching
         query = query.toLowerCase();
-
         final ArrayList<Note> filteredModelList = new ArrayList<>();
+        //iterate over all notes and check if they contain the query string
         for (Note model : models) {
             final String text = model.gettitle().concat(" ").concat(model.getDesc()).toLowerCase();
             if (text.contains(query)) {
                 filteredModelList.add(model);
             }
         }
+        //reinitialize RecyclerView with search results
         recyclerView.setLayoutManager(new LinearLayoutManager(TrashActivity.this));
         recyclerAdapter = new RecyclerAdapter(filteredModelList);
         recyclerView.setAdapter(recyclerAdapter);
@@ -241,8 +239,16 @@ public class TrashActivity extends AppCompatActivity implements SearchView.OnQue
     @Override
     public void onDestroy(){
         super.onDestroy();
+
+        //close database connections
         dbController.close();
         dbTrashController.close();
+    }
+
+    public interface ClickListener {
+        void onClick(View view, int position);
+
+        void onLongClick(View view, int position);
     }
 
 }

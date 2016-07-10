@@ -15,9 +15,8 @@ import java.util.ArrayList;
 public class RecyclerAdapter extends RecyclerView.Adapter<MainViewHolder> {
 
 
-
-    ArrayList<Note> notes;
-    ColorGenerator generator = ColorGenerator.MATERIAL;
+    private ArrayList<Note> notes;
+    private ColorGenerator generator = ColorGenerator.MATERIAL;
 
 
     public RecyclerAdapter(ArrayList<Note> notes) {
