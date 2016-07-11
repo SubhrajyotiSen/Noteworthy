@@ -4,15 +4,11 @@ import java.util.UUID;
 
 public class Note {
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
     private int id;
+    private String date;
+    private String title;
+    private String desc;
+    private String uid;
 
     public Note(String title, String desc)
     {
@@ -36,6 +32,14 @@ public class Note {
 
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public String getDate() {
         return date;
     }
@@ -44,20 +48,13 @@ public class Note {
         this.date = date;
     }
 
-    private String date;
-
-
-
-
-    public String gettitle() {
+    public String getTitle() {
         return title;
     }
 
-    public void settitle(String title) {
+    public void setTitle(String title) {
         this.title = title;
     }
-
-    private String title;
 
     public String getDesc() {
         return desc;
@@ -67,13 +64,9 @@ public class Note {
         this.desc = desc;
     }
 
-    private String desc;
-
     public String getUid() {
         return uid;
     }
-
-    private String uid;
 
 
 

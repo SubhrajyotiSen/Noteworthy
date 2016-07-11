@@ -110,7 +110,7 @@ public class TrashActivity extends AppCompatActivity implements SearchView.OnQue
 
 
                 Intent intent = new Intent(TrashActivity.this, DetailsActivity.class);
-                intent.putExtra("title", notes.get(position).gettitle());
+                intent.putExtra("title", notes.get(position).getTitle());
                 intent.putExtra("desc", notes.get(position).getDesc());
                 intent.putExtra("position",position);
                 String transitionName = getString(R.string.transition_name);
@@ -175,7 +175,7 @@ public class TrashActivity extends AppCompatActivity implements SearchView.OnQue
         isDeleted[0] = true;
         notes.remove(position);
         recyclerAdapter.notifyDataSetChanged();
-        Snackbar.make(coordinatorView, "'" + note.gettitle() + "' was removed", Snackbar.LENGTH_LONG)
+        Snackbar.make(coordinatorView, "'" + note.getTitle() + "' was removed", Snackbar.LENGTH_LONG)
                 .setAction("Undo", new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -224,7 +224,7 @@ public class TrashActivity extends AppCompatActivity implements SearchView.OnQue
         final ArrayList<Note> filteredModelList = new ArrayList<>();
         //iterate over all notes and check if they contain the query string
         for (Note model : models) {
-            final String text = model.gettitle().concat(" ").concat(model.getDesc()).toLowerCase();
+            final String text = model.getTitle().concat(" ").concat(model.getDesc()).toLowerCase();
             if (text.contains(query)) {
                 filteredModelList.add(model);
             }

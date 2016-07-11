@@ -48,5 +48,8 @@ dependencies {
     compile 'com.google.android.gms:play-services-drive:9.2.0'
     compile 'com.github.paolorotolo:expandableheightlistview:1.0.0'
 
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.mockito:mockito-all:1.10.19'
+
 
 }

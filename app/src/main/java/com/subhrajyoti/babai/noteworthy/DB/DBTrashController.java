@@ -30,7 +30,7 @@ public class DBTrashController {
 
         ContentValues values = new ContentValues();
 
-        values.put(com.subhrajyoti.babai.noteworthy.DB.DBTrashHelper.COL_NOTE_TITLE, note.gettitle());
+        values.put(com.subhrajyoti.babai.noteworthy.DB.DBTrashHelper.COL_NOTE_TITLE, note.getTitle());
         values.put(com.subhrajyoti.babai.noteworthy.DB.DBTrashHelper.COL_NOTE_DESC, note.getDesc());
         values.put(com.subhrajyoti.babai.noteworthy.DB.DBTrashHelper.COL_NOTE_DATE, note.getDate());
 
@@ -54,7 +54,7 @@ public class DBTrashController {
             do {
                 Note note = new Note();
                 note.setId(Integer.parseInt(cursor.getString(0)));
-                note.settitle(cursor.getString(1));
+                note.setTitle(cursor.getString(1));
                 note.setDesc(cursor.getString(2));
                 note.setDate(cursor.getString(3));
                 // Adding note to list

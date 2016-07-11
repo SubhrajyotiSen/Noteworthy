@@ -36,8 +36,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<MainViewHolder> {
 
     @Override
     public void onBindViewHolder(MainViewHolder mainViewHolder, int i) {
-        mainViewHolder.title.setText(notes.get(i).gettitle());
-        TextDrawable drawable = TextDrawable.builder().buildRound(String.valueOf(notes.get(i).gettitle().charAt(0)).toUpperCase(), generator.getColor(notes.get(i).gettitle()));
+        mainViewHolder.title.setText(notes.get(i).getTitle());
+        TextDrawable drawable = TextDrawable.builder().buildRound(String.valueOf(notes.get(i).getTitle().charAt(0)).toUpperCase(), generator.getColor(notes.get(i).getTitle()));
         mainViewHolder.imageView.setImageDrawable(drawable);
         mainViewHolder.dateView.setText(notes.get(i).getDate());
 
