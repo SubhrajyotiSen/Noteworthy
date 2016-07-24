@@ -22,11 +22,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.subhrajyoti.babai.noteworthy.Adapters.BackupAdapter;
-import com.subhrajyoti.babai.noteworthy.BackUp.Backup;
-import com.subhrajyoti.babai.noteworthy.BackUp.GoogleDriveBackup;
-import com.subhrajyoti.babai.noteworthy.Models.NoteBackup;
-import com.subhrajyoti.babai.noteworthy.R;
 import com.github.paolorotolo.expandableheightlistview.ExpandableHeightListView;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
@@ -46,6 +41,11 @@ import com.google.android.gms.drive.query.Query;
 import com.google.android.gms.drive.query.SearchableField;
 import com.google.android.gms.drive.query.SortOrder;
 import com.google.android.gms.drive.query.SortableField;
+import com.subhrajyoti.babai.noteworthy.Adapters.BackupAdapter;
+import com.subhrajyoti.babai.noteworthy.BackUp.Backup;
+import com.subhrajyoti.babai.noteworthy.BackUp.GoogleDriveBackup;
+import com.subhrajyoti.babai.noteworthy.Models.NoteBackup;
+import com.subhrajyoti.babai.noteworthy.R;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -58,7 +58,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 /*
-*Thanks Paolo Rotolo
+    Thanks Paolo Rotolo
 */
 
 public class BackupActivity extends AppCompatActivity {

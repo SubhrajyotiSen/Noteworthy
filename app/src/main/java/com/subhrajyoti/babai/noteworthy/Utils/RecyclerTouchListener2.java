@@ -1,4 +1,4 @@
-package com.subhrajyoti.babai.noteworthy.Listeners;
+package com.subhrajyoti.babai.noteworthy.Utils;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -6,14 +6,14 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.subhrajyoti.babai.noteworthy.Activities.MainActivity;
+import com.subhrajyoti.babai.noteworthy.Activities.TrashActivity;
 
-public class RecyclerTouchListener implements RecyclerView.OnItemTouchListener {
+public class RecyclerTouchListener2 implements RecyclerView.OnItemTouchListener {
 
     private GestureDetector gestureDetector;
-    private MainActivity.ClickListener clickListener;
+    private TrashActivity.ClickListener clickListener;
 
-    public RecyclerTouchListener(Context context, final RecyclerView recyclerView, final MainActivity.ClickListener clickListener) {
+    public RecyclerTouchListener2(Context context, final RecyclerView recyclerView, final TrashActivity.ClickListener clickListener) {
         this.clickListener = clickListener;
         gestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
             @Override
@@ -31,12 +31,14 @@ public class RecyclerTouchListener implements RecyclerView.OnItemTouchListener {
         });
     }
 
+
     @Override
     public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
 
         View child = rv.findChildViewUnder(e.getX(), e.getY());
         if (child != null && clickListener != null && gestureDetector.onTouchEvent(e)) {
             clickListener.onClick(child, rv.getChildLayoutPosition(child));
+
         }
         return false;
     }

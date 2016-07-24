@@ -19,18 +19,19 @@ import android.view.View;
 import com.subhrajyoti.babai.noteworthy.Adapters.RecyclerAdapter;
 import com.subhrajyoti.babai.noteworthy.DB.DBController;
 import com.subhrajyoti.babai.noteworthy.DB.DBTrashController;
-import com.subhrajyoti.babai.noteworthy.Listeners.RecyclerTouchListener2;
-import com.subhrajyoti.babai.noteworthy.Listeners.SwipeableListener;
 import com.subhrajyoti.babai.noteworthy.Models.Note;
 import com.subhrajyoti.babai.noteworthy.R;
+import com.subhrajyoti.babai.noteworthy.Utils.RecyclerTouchListener2;
+import com.subhrajyoti.babai.noteworthy.Utils.SwipeableListener;
 import com.subhrajyoti.babai.noteworthy.Utils.VerticalSpaceItemDecoration;
+import com.subhrajyoti.babai.noteworthy.Views.TrashView;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class TrashActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
+public class TrashActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, TrashView {
 
     //declarations
     private ArrayList<Note> notes;

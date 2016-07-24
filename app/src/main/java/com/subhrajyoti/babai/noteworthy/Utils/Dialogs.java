@@ -10,10 +10,10 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.subhrajyoti.babai.noteworthy.Activities.MainView;
+import com.subhrajyoti.babai.noteworthy.BackUp.RestoreDB;
+import com.subhrajyoti.babai.noteworthy.BackUp.SaveDB;
 import com.subhrajyoti.babai.noteworthy.R;
-import com.subhrajyoti.babai.noteworthy.RestoreDB;
-import com.subhrajyoti.babai.noteworthy.SaveDB;
+import com.subhrajyoti.babai.noteworthy.Views.MainView;
 
 public class Dialogs {
 

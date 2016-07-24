@@ -1,4 +1,4 @@
-package com.subhrajyoti.babai.noteworthy.Activities;
+package com.subhrajyoti.babai.noteworthy.Presenters;
 
 import android.Manifest;
 import android.animation.Animator;
@@ -21,12 +21,14 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import com.subhrajyoti.babai.noteworthy.Activities.DetailsActivity;
 import com.subhrajyoti.babai.noteworthy.DB.DBController;
 import com.subhrajyoti.babai.noteworthy.DB.DBTrashController;
-import com.subhrajyoti.babai.noteworthy.Listeners.SimpleListener;
 import com.subhrajyoti.babai.noteworthy.Models.Note;
 import com.subhrajyoti.babai.noteworthy.R;
 import com.subhrajyoti.babai.noteworthy.Utils.ReverseInterpolator;
+import com.subhrajyoti.babai.noteworthy.Utils.SimpleListener;
+import com.subhrajyoti.babai.noteworthy.Views.MainView;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -41,7 +43,7 @@ import io.codetail.animation.arcanimator.Side;
 import static android.content.Context.INPUT_METHOD_SERVICE;
 import static com.subhrajyoti.babai.noteworthy.Activities.MainActivity.firstView;
 
-class MainPresenter {
+public class MainPresenter {
 
     private MainView mainView;
     private DBController dbController;
@@ -49,13 +51,13 @@ class MainPresenter {
     private FrameLayout frameLayout;
     private FloatingActionButton fab;
 
-    MainPresenter(MainView mainView) {
+    public MainPresenter(MainView mainView) {
         this.mainView = mainView;
         dbController = new DBController(mainView.getContext());
         dbTrashController = new DBTrashController(mainView.getContext());
     }
 
-    void getPermissions() {
+    public void getPermissions() {
         ArrayList<String> permissions = new ArrayList<>();
 
         int hasPermissionStorage = ContextCompat.checkSelfPermission(mainView.getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
@@ -71,7 +73,7 @@ class MainPresenter {
         }
     }
 
-    void startDetailActivity(int position, String title, String desc, View view) {
+    public void startDetailActivity(int position, String title, String desc, View view) {
         Intent intent = new Intent(mainView.getContext(), DetailsActivity.class);
         intent.putExtra("title", title);
         intent.putExtra("desc", desc);
@@ -97,29 +99,29 @@ class MainPresenter {
         mainView.showEmptyTitleError(redId);
     }
 
-    void getNotes() {
+    public void getNotes() {
         mainView.showNotes(dbController.getAllNotes());
     }
 
-    void closeDB() {
+    public void closeDB() {
         dbController.close();
         dbTrashController.close();
     }
 
-    void addNoteToDB(Note note) {
+    public void addNoteToDB(Note note) {
         dbController.addNote(note);
     }
 
-    void deleteNoteFromDB(Note note) {
+    private void deleteNoteFromDB(Note note) {
         dbController.deleteNote(note);
         dbTrashController.addNote(note);
     }
 
-    void updateNoteInDB(Note note) {
+    public void updateNoteInDB(Note note) {
         dbController.updateNote(note);
     }
 
-    void deleteNote(Note note, int position) {
+    public void deleteNote(Note note, int position) {
         deleteNoteFromDB(note);
         mainView.updateNotesAfterDeletion(note);
         mainView.showSnackBar(note, position);
@@ -134,7 +136,7 @@ class MainPresenter {
         mainView.showAddedNote(note);
     }
 
-    void filter(List<Note> models, String query) {
+    public void filter(List<Note> models, String query) {
         //convert query text to lower case for easier searching
         query = query.toLowerCase();
         ArrayList<Note> filteredModelList = new ArrayList<>();
@@ -148,7 +150,7 @@ class MainPresenter {
         mainView.showFilteredNotes(filteredModelList);
     }
 
-    void ArcTime() {
+    public void ArcTime() {
 
         frameLayout = mainView.getFrame();
         fab = mainView.getFAB();
@@ -168,7 +170,7 @@ class MainPresenter {
         arcAnimator.start();
     }
 
-    void fabPressed() {
+    public void fabPressed() {
 
         //retrieve note title and content
         final String s1 = mainView.getNoteTitle();

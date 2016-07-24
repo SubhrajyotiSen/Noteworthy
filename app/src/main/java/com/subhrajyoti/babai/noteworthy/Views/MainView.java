@@ -1,4 +1,4 @@
-package com.subhrajyoti.babai.noteworthy.Activities;
+package com.subhrajyoti.babai.noteworthy.Views;
 
 import android.content.Context;
 import android.support.design.widget.FloatingActionButton;

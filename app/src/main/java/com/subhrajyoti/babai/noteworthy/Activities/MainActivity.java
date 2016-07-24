@@ -29,14 +29,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.subhrajyoti.babai.noteworthy.Adapters.RecyclerAdapter;
-import com.subhrajyoti.babai.noteworthy.DB.DBTrashController;
-import com.subhrajyoti.babai.noteworthy.Listeners.RecyclerTouchListener;
-import com.subhrajyoti.babai.noteworthy.Listeners.SwipeableListener;
 import com.subhrajyoti.babai.noteworthy.Models.Note;
+import com.subhrajyoti.babai.noteworthy.Presenters.MainPresenter;
 import com.subhrajyoti.babai.noteworthy.R;
 import com.subhrajyoti.babai.noteworthy.Utils.Dialogs;
+import com.subhrajyoti.babai.noteworthy.Utils.RecyclerTouchListener;
 import com.subhrajyoti.babai.noteworthy.Utils.RecyclerViewEmptySupport;
+import com.subhrajyoti.babai.noteworthy.Utils.SwipeableListener;
 import com.subhrajyoti.babai.noteworthy.Utils.VerticalSpaceItemDecoration;
+import com.subhrajyoti.babai.noteworthy.Views.MainView;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -48,7 +49,7 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, SearchView.OnQueryTextListener, MainView {
 
-    static boolean firstView;
+    public static boolean firstView;
     //Declare views and bind views
     @Bind(R.id.fab)
     FloatingActionButton fab;
