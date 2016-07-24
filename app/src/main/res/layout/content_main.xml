@@ -40,7 +40,6 @@
                     android:layout_centerInParent="true"
                     android:text="@string/empty_text"
                     android:textSize="30sp"
-                    android:visibility="invisible"
                     android:id="@+id/emptyTextView"/>
 
             </RelativeLayout>
