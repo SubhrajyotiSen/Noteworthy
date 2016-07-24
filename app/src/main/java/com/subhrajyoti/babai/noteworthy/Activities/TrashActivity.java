@@ -102,7 +102,7 @@ public class TrashActivity extends AppCompatActivity implements SearchView.OnQue
 
         recyclerView.addOnItemTouchListener(swipeTouchListener);
         recyclerAdapter = new RecyclerAdapter(notes);
-        recyclerView.addItemDecoration(new VerticalSpaceItemDecoration(40));
+        recyclerView.addItemDecoration(new VerticalSpaceItemDecoration(10));
         recyclerView.setAdapter(recyclerAdapter);
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener2(getApplicationContext(), recyclerView, new ClickListener() {
             @Override

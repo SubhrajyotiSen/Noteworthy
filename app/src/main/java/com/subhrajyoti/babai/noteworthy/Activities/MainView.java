@@ -5,15 +5,13 @@ import android.support.design.widget.FloatingActionButton;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.subhrajyoti.babai.noteworthy.Models.Note;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by subhrajyoti on 11/7/16.
- */
 public interface MainView {
 
     void showEmptyTitleError(int redId);
@@ -38,7 +36,7 @@ public interface MainView {
 
     View getFocus();
 
-    LinearLayout getFirstLayout();
+    RelativeLayout getFirstLayout();
 
     LinearLayout getSecondLayout();
 

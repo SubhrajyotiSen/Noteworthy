@@ -32,4 +32,6 @@
     <string name="restore_fail">Restore unsuccessful</string>
     <string name="letter_head">letter_head</string>
     <string name="nav_header">Navigation header</string>
+    <string name="moved_trash">\' moved to Trash</string>
+    <string name="empty_text">Time to add some notes</string>
 </resources>

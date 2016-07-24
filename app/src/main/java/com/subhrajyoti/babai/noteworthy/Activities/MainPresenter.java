@@ -14,9 +14,12 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.SearchView;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.subhrajyoti.babai.noteworthy.DB.DBController;
 import com.subhrajyoti.babai.noteworthy.DB.DBTrashController;
@@ -37,10 +40,6 @@ import io.codetail.animation.arcanimator.Side;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
 import static com.subhrajyoti.babai.noteworthy.Activities.MainActivity.firstView;
-
-/**
- * Created by subhrajyoti on 11/7/16.
- */
 
 class MainPresenter {
 
@@ -116,10 +115,6 @@ class MainPresenter {
         dbTrashController.addNote(note);
     }
 
-    void deleteNoteFromTrash(Note note) {
-        dbTrashController.deleteNote(note);
-    }
-
     void updateNoteInDB(Note note) {
         dbController.updateNote(note);
     }
@@ -179,9 +174,12 @@ class MainPresenter {
         final String s1 = mainView.getNoteTitle();
         final String s2 = mainView.getNoteDescription();
 
-        final LinearLayout first = mainView.getFirstLayout();
+        final RelativeLayout first = mainView.getFirstLayout();
         final LinearLayout second = mainView.getSecondLayout();
         SearchView searchView = mainView.getSearchView();
+
+        Animation animation = AnimationUtils.loadAnimation(mainView.getContext(), R.anim.simple_grow);
+
 
 
         //get positions for animation
@@ -194,6 +192,7 @@ class MainPresenter {
         //final position of FAB after arc animation
         fab.setX(cx2);
         fab.setY(cy2);
+        fab.startAnimation(animation);
         searchView.onActionViewCollapsed();
 
         //check is Android version is KitKat or below

@@ -24,6 +24,8 @@ import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.subhrajyoti.babai.noteworthy.Adapters.RecyclerAdapter;
@@ -33,6 +35,7 @@ import com.subhrajyoti.babai.noteworthy.Listeners.SwipeableListener;
 import com.subhrajyoti.babai.noteworthy.Models.Note;
 import com.subhrajyoti.babai.noteworthy.R;
 import com.subhrajyoti.babai.noteworthy.Utils.Dialogs;
+import com.subhrajyoti.babai.noteworthy.Utils.RecyclerViewEmptySupport;
 import com.subhrajyoti.babai.noteworthy.Utils.VerticalSpaceItemDecoration;
 
 import java.text.DateFormat;
@@ -52,9 +55,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Bind(R.id.drawer_layout)
     DrawerLayout drawer;
     @Bind(R.id.recyclerView)
-    RecyclerView recyclerView;
+    RecyclerViewEmptySupport recyclerView;
     @Bind(R.id.first)
-    LinearLayout first;
+    RelativeLayout first;
     @Bind(R.id.second)
     LinearLayout second;
     @Bind(R.id.coordinator)
@@ -65,6 +68,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     EditText titleText;
     @Bind(R.id.desc_text)
     EditText descText;
+    @Bind(R.id.emptyTextView)
+    TextView emptyTextView;
     private LinearLayoutManager linearLayoutManager;
     private DBTrashController dbTrashController;
     private SearchView searchView;
@@ -172,7 +177,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         recyclerView.addOnItemTouchListener(swipeTouchListener);
         recyclerAdapter = new RecyclerAdapter(notes);
-        recyclerView.addItemDecoration(new VerticalSpaceItemDecoration(40));
+        recyclerView.addItemDecoration(new VerticalSpaceItemDecoration(10));
         recyclerView.setAdapter(recyclerAdapter);
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), recyclerView, new ClickListener() {
             @Override
@@ -186,6 +191,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 mainPresenter.shareNote(notes.get(position));
             }
         }));
+        recyclerView.setEmptyView(findViewById(R.id.emptyTextView));
 
     }
 
@@ -362,7 +368,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    public LinearLayout getFirstLayout() {
+    public RelativeLayout getFirstLayout() {
         return first;
     }
 
@@ -385,17 +391,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void showSnackBar(final Note note, final int position) {
-        Snackbar.make(coordinatorView, "'" + note.getTitle() + "' was removed", Snackbar.LENGTH_LONG)
-                .setAction("Undo", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        notes.add(position, note);
-                        filteredModelList.add(position, note);
-                        recyclerAdapter.notifyDataSetChanged();
-                        mainPresenter.deleteNoteFromTrash(note);
-                        mainPresenter.addNoteToDB(note);
-                    }
-                }).show();
+        Snackbar.make(coordinatorView, "'" + note.getTitle() + getString(R.string.moved_trash), Snackbar.LENGTH_LONG)
+                .show();
     }
 
     @Override
