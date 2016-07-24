@@ -15,10 +15,6 @@ import com.subhrajyoti.babai.noteworthy.R;
 import com.subhrajyoti.babai.noteworthy.RestoreDB;
 import com.subhrajyoti.babai.noteworthy.SaveDB;
 
-/**
- * Created by subhrajyoti on 11/7/16.
- */
-
 public class Dialogs {
 
     private static MainView mainView;
@@ -58,7 +54,7 @@ public class Dialogs {
                 .content(((Build.VERSION.SDK_INT >= 24)) ? Html.fromHtml(context.getString(R.string.html_text), Html.FROM_HTML_MODE_LEGACY) : Html.fromHtml("<p>Check out the project on <a href=\"https://github.com/SubhrajyotiSen/Noteworthy\">GitHub</a></p>"))
                 .titleGravity(GravityEnum.CENTER)
                 .contentGravity(GravityEnum.CENTER)
-                .icon(ResourcesCompat.getDrawable(context.getResources(), R.mipmap.ic_launcher, null))
+                .icon(ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_launcher, null))
                 .show();
     }
 }

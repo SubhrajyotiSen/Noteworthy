@@ -215,7 +215,7 @@ class MainPresenter {
                 animator.start();
 
                 //change FAB appearance
-                fab.setImageResource(R.drawable.ic_done_white_24dp);
+                fab.setImageResource(R.drawable.ic_done_white);
                 fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(mainView.getContext(), R.color.colorPrimary)));
 
                 //denote that second view is visible now
@@ -243,7 +243,7 @@ class MainPresenter {
                             showEmptyTitleError(R.string.empty_note_message);
                         }
 
-                        fab.setImageResource(R.drawable.ic_mode_edit_black_24dp);
+                        fab.setImageResource(R.drawable.ic_mode_edit_black);
                         fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(mainView.getContext(), R.color.colorAccentSecondary)));
                         firstView = true;
                     }
@@ -271,7 +271,7 @@ class MainPresenter {
                 first.setVisibility(View.INVISIBLE);
                 anim.start();
                 fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(mainView.getContext(), R.color.colorPrimary)));
-                fab.setImageResource(R.drawable.ic_done_white_24dp);
+                fab.setImageResource(R.drawable.ic_done_white);
 
                 firstView = false;
             } else {
@@ -292,7 +292,7 @@ class MainPresenter {
                             showEmptyTitleError(R.string.empty_note_message);
                         }
 
-                        fab.setImageResource(R.drawable.ic_mode_edit_black_24dp);
+                        fab.setImageResource(R.drawable.ic_mode_edit_black);
                         fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(mainView.getContext(), R.color.colorAccentSecondary)));
 
                         firstView = true;
@@ -306,12 +306,6 @@ class MainPresenter {
 
     }
 
-    void shareNote(Note note) {
-        Intent sharing = new Intent(Intent.ACTION_SEND);
-        sharing.setType("text/plain");
-        sharing.putExtra(Intent.EXTRA_TEXT, note.getTitle() + "\n\n" + note.getDesc());
-        mainView.getContext().startActivity(Intent.createChooser(sharing, "Share via"));
-    }
 
 
 }

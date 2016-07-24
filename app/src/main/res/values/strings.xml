@@ -34,4 +34,10 @@
     <string name="nav_header">Navigation header</string>
     <string name="moved_trash">\' moved to Trash</string>
     <string name="empty_text">Time to add some notes</string>
+    <string name="share_string">Share</string>
+    <string name="online_text">Online</string>
+    <string name="local_text">Local</string>
+    <string name="backup_restore">Backup/Restore</string>
+    <string name="trash_text">Trash</string>
+    <string name="about_text">About</string>
 </resources>

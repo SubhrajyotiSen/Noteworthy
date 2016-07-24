@@ -7,7 +7,9 @@ import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
@@ -43,9 +45,9 @@ public class DetailsActivity extends AppCompatActivity {
         floatingActionButton.startAnimation(animation);
 
         //switch drawer toggle icon with exit icon
-        final Drawable cross = getResources().getDrawable(R.drawable.ic_clear_white_24dp);
+        final Drawable cross = ResourcesCompat.getDrawable(getResources(),R.drawable.ic_clear_white,null);
         if(cross !=null){
-            cross.setColorFilter(getResources().getColor(R.color.icons), PorterDuff.Mode.SRC_ATOP);
+            cross.setColorFilter(ResourcesCompat.getColor(getResources(),R.color.icons,null), PorterDuff.Mode.SRC_ATOP);
         }
         if(getSupportActionBar()!=null){
             getSupportActionBar().setElevation(0);
@@ -69,10 +71,21 @@ public class DetailsActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_details, menu);
+
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
+                return true;
+            case R.id.action_share:
+                shareNote();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -99,6 +112,13 @@ public class DetailsActivity extends AppCompatActivity {
     public void onBackPressed() {
         //update the note if back button pressed
         update();
+    }
+
+    private void shareNote() {
+        Intent sharing = new Intent(Intent.ACTION_SEND);
+        sharing.setType("text/plain");
+        sharing.putExtra(Intent.EXTRA_TEXT, titleText.getText().toString() + "\n\n" + detailsText.getText().toString());
+        startActivity(Intent.createChooser(sharing, "Share via"));
     }
 
 }
