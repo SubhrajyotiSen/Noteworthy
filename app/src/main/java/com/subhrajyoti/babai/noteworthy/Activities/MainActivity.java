@@ -175,7 +175,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 recyclerAdapter.notifyDataSetChanged();
                             }
                         });
-
+        recyclerView.setEmptyView(findViewById(R.id.emptyTextView));
         recyclerView.addOnItemTouchListener(swipeTouchListener);
         recyclerAdapter = new RecyclerAdapter(notes);
         recyclerView.addItemDecoration(new VerticalSpaceItemDecoration(10));
@@ -190,7 +190,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onLongClick(View view, int position) {
             }
         }));
-        recyclerView.setEmptyView(findViewById(R.id.emptyTextView));
 
     }
 
