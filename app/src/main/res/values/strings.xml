@@ -40,4 +40,5 @@
     <string name="backup_restore">Backup/Restore</string>
     <string name="trash_text">Trash</string>
     <string name="about_text">About</string>
+    <string name="app_name_full">NoteWorthy v1.0.0</string>
 </resources>

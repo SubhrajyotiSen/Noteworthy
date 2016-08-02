@@ -29,9 +29,6 @@
             android:name="com.subhrajyoti.babai.noteworthy.Activities.DetailsActivity"
             android:parentActivityName="com.subhrajyoti.babai.noteworthy.Activities.MainActivity"
             android:windowSoftInputMode="adjustResize"/>
-        <activity
-            android:name="com.subhrajyoti.babai.noteworthy.Activities.BackupActivity"
-            android:parentActivityName="com.subhrajyoti.babai.noteworthy.Activities.MainActivity" />
         <activity android:name="com.subhrajyoti.babai.noteworthy.Activities.TrashActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:parentActivityName="com.subhrajyoti.babai.noteworthy.Activities.MainActivity"/>

@@ -233,7 +233,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             //online backup option
             case R.id.online:
-                startActivity(new Intent(MainActivity.this, BackupActivity.class));
+                Dialogs.comingSoon(this);
                 break;
 
             //local backup option

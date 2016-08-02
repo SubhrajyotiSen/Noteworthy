@@ -50,11 +50,21 @@ public class Dialogs {
     public static void about(final Context context) {
 
         new MaterialDialog.Builder(context)
-                .title("NoteWorthy v1.0.0")
+                .title(R.string.app_name_full)
                 .content(((Build.VERSION.SDK_INT >= 24)) ? Html.fromHtml(context.getString(R.string.html_text), Html.FROM_HTML_MODE_LEGACY) : Html.fromHtml("<p>Check out the project on <a href=\"https://github.com/SubhrajyotiSen/Noteworthy\">GitHub</a></p>"))
                 .titleGravity(GravityEnum.CENTER)
                 .contentGravity(GravityEnum.CENTER)
                 .icon(ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_launcher, null))
+                .show();
+    }
+
+    public static void comingSoon(final Context context) {
+
+        new MaterialDialog.Builder(context)
+                .title("Online backup")
+                .content("Coming soon")
+                .titleGravity(GravityEnum.CENTER)
+                .contentGravity(GravityEnum.CENTER)
                 .show();
     }
 }
