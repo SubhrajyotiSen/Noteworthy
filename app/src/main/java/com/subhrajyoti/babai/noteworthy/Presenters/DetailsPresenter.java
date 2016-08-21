@@ -26,8 +26,8 @@ public class DetailsPresenter {
         //checks if note title is empty
         if (!note.getTitle().trim().equals("")) {
             Intent intent = new Intent();
-            intent.putExtra("title",note.getTitle().toString());
-            intent.putExtra("desc",note.getDesc().toString());
+            intent.putExtra("title", note.getTitle());
+            intent.putExtra("desc", note.getDesc());
             intent.putExtra("position",position);
             detailsView.finishIntent(intent);
         } else

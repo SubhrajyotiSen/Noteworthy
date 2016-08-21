@@ -23,7 +23,6 @@ import android.widget.RelativeLayout;
 
 import com.subhrajyoti.babai.noteworthy.Activities.DetailsActivity;
 import com.subhrajyoti.babai.noteworthy.DB.DBController;
-import com.subhrajyoti.babai.noteworthy.DB.DBTrashController;
 import com.subhrajyoti.babai.noteworthy.Models.Note;
 import com.subhrajyoti.babai.noteworthy.R;
 import com.subhrajyoti.babai.noteworthy.Utils.ReverseInterpolator;
@@ -47,14 +46,12 @@ public class MainPresenter {
 
     private MainView mainView;
     private DBController dbController;
-    private DBTrashController dbTrashController;
     private FrameLayout frameLayout;
     private FloatingActionButton fab;
 
     public MainPresenter(MainView mainView) {
         this.mainView = mainView;
         dbController = new DBController(mainView.getContext());
-        dbTrashController = new DBTrashController(mainView.getContext());
     }
 
     public void getPermissions() {
@@ -105,7 +102,6 @@ public class MainPresenter {
 
     public void closeDB() {
         dbController.close();
-        dbTrashController.close();
     }
 
     public void addNoteToDB(Note note) {
@@ -114,7 +110,7 @@ public class MainPresenter {
 
     private void deleteNoteFromDB(Note note) {
         dbController.deleteNote(note);
-        dbTrashController.addNote(note);
+        dbController.addNoteToTrash(note);
     }
 
     public void updateNoteInDB(Note note) {

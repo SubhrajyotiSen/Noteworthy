@@ -18,7 +18,6 @@ import android.view.View;
 
 import com.subhrajyoti.babai.noteworthy.Adapters.RecyclerAdapter;
 import com.subhrajyoti.babai.noteworthy.DB.DBController;
-import com.subhrajyoti.babai.noteworthy.DB.DBTrashController;
 import com.subhrajyoti.babai.noteworthy.Models.Note;
 import com.subhrajyoti.babai.noteworthy.R;
 import com.subhrajyoti.babai.noteworthy.Utils.RecyclerTouchListener2;
@@ -40,7 +39,6 @@ public class TrashActivity extends AppCompatActivity implements SearchView.OnQue
     private View coordinatorView;
     private LinearLayoutManager linearLayoutManager;
     private DBController dbController;
-    private DBTrashController dbTrashController;
     private SearchView searchView;
 
     @Override
@@ -55,8 +53,7 @@ public class TrashActivity extends AppCompatActivity implements SearchView.OnQue
         assert getSupportActionBar()!=null;
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        //initialize database helpers
-        dbTrashController = new DBTrashController(this);
+        //initialize database helper
         dbController = new DBController(this);
 
         coordinatorView = findViewById(R.id.coordinator);
@@ -130,7 +127,7 @@ public class TrashActivity extends AppCompatActivity implements SearchView.OnQue
             public void onLongClick(View view, int position) {
 
                 dbController.addNote(notes.get(position));
-                dbTrashController.deleteNote(notes.get(position));
+                dbController.deleteNoteFromTrash(notes.get(position));
                 notes.remove(position);
                 recyclerAdapter.notifyDataSetChanged();
 
@@ -172,27 +169,23 @@ public class TrashActivity extends AppCompatActivity implements SearchView.OnQue
 
     private void removeOnSwipe(final int position) {
         final Note note = notes.get(position);
-        final boolean[] isDeleted = new boolean[1];
-        isDeleted[0] = true;
+        dbController.deleteNoteFromTrash(note);
         notes.remove(position);
         recyclerAdapter.notifyDataSetChanged();
         Snackbar.make(coordinatorView, "'" + note.getTitle() + "' was removed", Snackbar.LENGTH_LONG)
                 .setAction("Undo", new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        isDeleted[0] = false;
                         notes.add(position,note);
+                        dbController.addNoteToTrash(note);
                         recyclerAdapter.notifyDataSetChanged();
                     }
                 }).show();
-        if (isDeleted[0]){
-            dbTrashController.deleteNote(note);
-        }
     }
 
     //function to fetch all notes from database
     private void getNotes(){
-        List<Note> notes2 = dbTrashController.getAllNotes();
+        List<Note> notes2 = dbController.getAllNotesFromTrash();
         for (int i = 0; i < notes2.size(); i++) {
             notes.add(notes2.get(i));
         }
@@ -206,14 +199,14 @@ public class TrashActivity extends AppCompatActivity implements SearchView.OnQue
         if (resultCode == RESULT_OK) {
             int index= data.getIntExtra("position",-1);
             Note note = notes.get(index);
-            dbTrashController.deleteNote(note);
+            dbController.deleteNoteFromTrash(note);
             notes.remove(index);
             note = new Note(data.getStringExtra("title"),data.getStringExtra("desc"));
             Date date = new Date();
             String Date= DateFormat.getDateInstance().format(date);
             note.setDate(Date);
             notes.add(index,note);
-            dbTrashController.addNote(note);
+            dbController.addNoteToTrash(note);
             recyclerAdapter.notifyDataSetChanged();
         }
     }
@@ -243,7 +236,6 @@ public class TrashActivity extends AppCompatActivity implements SearchView.OnQue
 
         //close database connections
         dbController.close();
-        dbTrashController.close();
     }
 
     public interface ClickListener {

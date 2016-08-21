@@ -13,17 +13,27 @@ class DBHelper extends SQLiteOpenHelper {
     static final String COL_NOTE_TITLE = "_title";
     static final String COL_NOTE_DESC = "_description";
     static final String COL_NOTE_DATE = "_date";
-    static final String[] columns = new String[]{DBHelper.COL_ID,
-            DBHelper.COL_NOTE_TITLE, DBHelper.COL_NOTE_DESC,
-            DBHelper.COL_NOTE_DATE};
+
     //Database Information
     private static final String DATABASE_NAME = "notes.db";
     private static final int DATABASE_VERSION = 1;
+
+    //Table Name
+    static final String TABLE_NAME_TRASH = "trash";
+    //Column Names
+    static final String COL_ID_TRASH = "_id";
+    static final String COL_NOTE_TITLE_TRASH = "_title";
+    static final String COL_NOTE_DESC_TRASH = "_description";
+    static final String COL_NOTE_DATE_TRASH = "_date";
 
     // creation SQLite statement
     private static final String DATABASE_CREATE = "CREATE TABLE " + TABLE_NAME
             + "(" + COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
             + COL_NOTE_TITLE + " TEXT NOT NULL, " + COL_NOTE_DESC + " TEXT," + COL_NOTE_DATE + " TEXT NOT NULL);";
+
+    private static final String DATABASE_CREATE_TRASH = "CREATE TABLE " + TABLE_NAME_TRASH
+            + "(" + COL_ID_TRASH + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + COL_NOTE_TITLE_TRASH + " TEXT NOT NULL, " + COL_NOTE_DESC_TRASH + " TEXT," + COL_NOTE_DATE_TRASH + " TEXT NOT NULL);";
 
     DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -33,6 +43,7 @@ class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(DATABASE_CREATE);
+        db.execSQL(DATABASE_CREATE_TRASH);
         System.out.println("Table Created");
 
     }
@@ -40,6 +51,7 @@ class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME_TRASH);
         onCreate(db);
         System.out.println("DB Updated");
     }
