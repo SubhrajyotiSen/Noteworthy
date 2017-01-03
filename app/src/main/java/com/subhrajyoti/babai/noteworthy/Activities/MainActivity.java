@@ -72,7 +72,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Bind(R.id.emptyTextView)
     TextView emptyTextView;
     private LinearLayoutManager linearLayoutManager;
-    private DBTrashController dbTrashController;
     private SearchView searchView;
     private ArrayList<Note> filteredModelList;
     private RecyclerAdapter recyclerAdapter;
