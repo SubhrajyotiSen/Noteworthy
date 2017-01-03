@@ -201,7 +201,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             drawer.closeDrawer(GravityCompat.START);
         } else if (!firstView) {
             mainPresenter.fabPressed();
-        } else {
+        } else if (!searchView.isIconified()) {
+            searchView.setIconified(true);
+        }
+        else {
             //default back press behavior
             super.onBackPressed();
         }
@@ -213,6 +216,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getMenuInflater().inflate(R.menu.menu_main, menu);
         final MenuItem item = menu.findItem(R.id.action_search);
         searchView = (SearchView) MenuItemCompat.getActionView(item);
+
         searchView.setOnQueryTextListener(this);
         return true;
     }
@@ -331,6 +335,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         recyclerAdapter = new RecyclerAdapter(arrayList);
         recyclerView.setAdapter(recyclerAdapter);
         recyclerAdapter.notifyDataSetChanged();
+        filteredModelList.clear();
+        filteredModelList.addAll(arrayList);
     }
 
     @Override
