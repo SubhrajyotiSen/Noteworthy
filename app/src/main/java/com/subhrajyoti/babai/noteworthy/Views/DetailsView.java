@@ -13,6 +13,8 @@ public interface DetailsView {
 
     void finishIntent(Intent intent);
 
-    void showSnackBar();
+    void showEmptyTitleSnackBar();
+
+    void showNotEditableSnackBar();
 
 }

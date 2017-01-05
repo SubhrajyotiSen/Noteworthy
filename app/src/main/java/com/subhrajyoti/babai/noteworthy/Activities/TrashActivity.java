@@ -111,6 +111,7 @@ public class TrashActivity extends AppCompatActivity implements SearchView.OnQue
                 intent.putExtra("title", notes.get(position).getTitle());
                 intent.putExtra("desc", notes.get(position).getDesc());
                 intent.putExtra("position",position);
+                intent.putExtra("caller","Trash");
                 String transitionName = getString(R.string.transition_name);
                 View cardView;
                 cardView = recyclerView.getChildAt(position);

@@ -31,7 +31,7 @@ public class DetailsPresenter {
             intent.putExtra("position",position);
             detailsView.finishIntent(intent);
         } else
-            detailsView.showSnackBar();
+            detailsView.showEmptyTitleSnackBar();
     }
 
     public void updateTexts(Intent intent){
@@ -39,5 +39,9 @@ public class DetailsPresenter {
         detailsView.setNoteDetail(intent.getStringExtra("desc"));
         DetailsActivity.position = intent.getIntExtra("position",-1);
 
+    }
+
+    public void showNotEditableError(){
+        detailsView.showNotEditableSnackBar();
     }
 }

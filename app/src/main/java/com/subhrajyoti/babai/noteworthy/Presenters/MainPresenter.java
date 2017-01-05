@@ -75,6 +75,7 @@ public class MainPresenter {
         intent.putExtra("title", title);
         intent.putExtra("desc", desc);
         intent.putExtra("position", position);
+        intent.putExtra("caller","Main");
         String transitionName = mainView.getContext().getString(R.string.transition_name);
 
         ActivityOptionsCompat options =

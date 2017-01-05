@@ -38,6 +38,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsView {
     CoordinatorLayout coordinatorLayout;
     public static int position;
     private DetailsPresenter detailsPresenter;
+    private boolean editable = true;
 
 
     @Override
@@ -52,6 +53,13 @@ public class DetailsActivity extends AppCompatActivity implements DetailsView {
 
         //initialise presenter
         detailsPresenter = new DetailsPresenter(this);
+
+        if (getIntent().getStringExtra("caller").equals("Trash"))
+            editable = false;
+        if (!editable) {
+            titleText.setFocusable(false);
+            detailsText.setFocusable(false);
+        }
 
         //switch drawer toggle icon with exit icon
         final Drawable cross = ResourcesCompat.getDrawable(getResources(),R.drawable.ic_clear_white,null);
@@ -72,6 +80,19 @@ public class DetailsActivity extends AppCompatActivity implements DetailsView {
             @Override
             public void onClick(View v) {
                 detailsPresenter.update(getNote(),position);
+            }
+        });
+
+        titleText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                detailsPresenter.showNotEditableError();
+            }
+        });
+        detailsText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                detailsPresenter.showNotEditableError();
             }
         });
 
@@ -129,8 +150,13 @@ public class DetailsActivity extends AppCompatActivity implements DetailsView {
     }
 
     @Override
-    public void showSnackBar() {
+    public void showEmptyTitleSnackBar() {
         Snackbar.make(coordinatorLayout, "Please enter a title", Snackbar.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showNotEditableSnackBar() {
+        Snackbar.make(coordinatorLayout, "Notes in Trash cannot be edited", Snackbar.LENGTH_SHORT).show();
     }
 
     private Note getNote(){
