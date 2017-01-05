@@ -20,7 +20,7 @@ import com.subhrajyoti.babai.noteworthy.Adapters.RecyclerAdapter;
 import com.subhrajyoti.babai.noteworthy.DB.DBController;
 import com.subhrajyoti.babai.noteworthy.Models.Note;
 import com.subhrajyoti.babai.noteworthy.R;
-import com.subhrajyoti.babai.noteworthy.Utils.RecyclerTouchListener2;
+import com.subhrajyoti.babai.noteworthy.Utils.RecyclerTouchListener;
 import com.subhrajyoti.babai.noteworthy.Utils.SwipeableListener;
 import com.subhrajyoti.babai.noteworthy.Utils.VerticalSpaceItemDecoration;
 import com.subhrajyoti.babai.noteworthy.Views.TrashView;
@@ -102,7 +102,7 @@ public class TrashActivity extends AppCompatActivity implements SearchView.OnQue
         recyclerAdapter = new RecyclerAdapter(notes);
         recyclerView.addItemDecoration(new VerticalSpaceItemDecoration(10));
         recyclerView.setAdapter(recyclerAdapter);
-        recyclerView.addOnItemTouchListener(new RecyclerTouchListener2(getApplicationContext(), recyclerView, new ClickListener() {
+        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), recyclerView, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
 
@@ -237,12 +237,6 @@ public class TrashActivity extends AppCompatActivity implements SearchView.OnQue
 
         //close database connections
         dbController.close();
-    }
-
-    public interface ClickListener {
-        void onClick(View view, int position);
-
-        void onLongClick(View view, int position);
     }
 
 }

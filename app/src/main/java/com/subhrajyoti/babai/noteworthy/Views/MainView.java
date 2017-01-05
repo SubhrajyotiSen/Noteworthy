@@ -48,11 +48,7 @@ public interface MainView {
 
     void updateNotesAfterDeletion(Note note);
 
-    interface ClickListener {
-        void onClick(View view, int position);
 
-        void onLongClick(View view, int position);
-    }
 
 
 }
