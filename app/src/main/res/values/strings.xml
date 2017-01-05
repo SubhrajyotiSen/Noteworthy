@@ -41,4 +41,6 @@
     <string name="trash_text">Trash</string>
     <string name="about_text">About</string>
     <string name="app_name_full">NoteWorthy v1.0.0</string>
+    <string name="empty_title_error">Please enter a title</string>
+    <string name="trash_edit_error">Notes in Trash cannot be edited</string>
 </resources>

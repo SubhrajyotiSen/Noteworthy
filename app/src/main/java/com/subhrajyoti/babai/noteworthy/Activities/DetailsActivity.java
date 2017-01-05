@@ -151,12 +151,12 @@ public class DetailsActivity extends AppCompatActivity implements DetailsView {
 
     @Override
     public void showEmptyTitleSnackBar() {
-        Snackbar.make(coordinatorLayout, "Please enter a title", Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(coordinatorLayout, R.string.empty_title_error, Snackbar.LENGTH_SHORT).show();
     }
 
     @Override
     public void showNotEditableSnackBar() {
-        Snackbar.make(coordinatorLayout, "Notes in Trash cannot be edited", Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(coordinatorLayout, R.string.trash_edit_error, Snackbar.LENGTH_SHORT).show();
     }
 
     private Note getNote(){
