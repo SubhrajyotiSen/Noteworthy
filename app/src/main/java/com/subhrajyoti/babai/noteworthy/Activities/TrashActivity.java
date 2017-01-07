@@ -193,11 +193,6 @@ public class TrashActivity extends AppCompatActivity implements SearchView.OnQue
     }
 
     @Override
-    public SearchView getSearchView() {
-        return null;
-    }
-
-    @Override
     public void showSnackBarDelete(Note note) {
         Snackbar.make(coordinatorView, "'" + note.getTitle() + getString(R.string.delete_permanent), Snackbar.LENGTH_LONG)
                 .show();
