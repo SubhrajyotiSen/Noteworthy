@@ -33,7 +33,7 @@
     <string name="letter_head">letter_head</string>
     <string name="nav_header">Navigation header</string>
     <string name="moved_trash">\' moved to Trash</string>
-    <string name="empty_text">Time to add some notes</string>
+    <string name="empty_text">Time to add \n some notes</string>
     <string name="share_string">Share</string>
     <string name="online_text">Online</string>
     <string name="local_text">Local</string>
