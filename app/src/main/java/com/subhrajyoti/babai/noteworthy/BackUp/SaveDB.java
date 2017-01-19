@@ -27,6 +27,8 @@ public class SaveDB{
                 src.close();
                 dst.close();
             }
+            else
+                return false;
             return true;
         } catch (Exception e){
             Log.e("haha",e.getLocalizedMessage());

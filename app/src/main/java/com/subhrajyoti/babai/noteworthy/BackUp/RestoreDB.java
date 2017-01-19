@@ -14,7 +14,7 @@ public class RestoreDB {
         try {
             File sd = Environment.getExternalStorageDirectory();
             File data = Environment.getDataDirectory();
-            if (sd.canWrite()) {
+            if (sd.canRead()) {
                 String currentDBPath = "//data//" + "com.subhrajyoti.noteworthy"
                         + "//databases//" + "notes.db";
                 String backupDBPath = "/NotesBackup.db"; // From SD directory.
@@ -26,7 +26,8 @@ public class RestoreDB {
                 dst.transferFrom(src, 0, src.size());
                 src.close();
                 dst.close();
-            }
+            } else
+                return false;
             return true;
         } catch (Exception e) {
             Log.v("TAG",e.getLocalizedMessage());
