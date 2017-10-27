@@ -7,7 +7,7 @@ import android.widget.TextView;
 
 import com.subhrajyoti.babai.noteworthy.R;
 
-class MainViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
+public class MainViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 
     TextView title;
     ImageView imageView;
