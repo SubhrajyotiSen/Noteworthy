@@ -22,19 +22,20 @@ import com.subhrajyoti.babai.noteworthy.Presenters.DetailsPresenter;
 import com.subhrajyoti.babai.noteworthy.R;
 import com.subhrajyoti.babai.noteworthy.Views.DetailsView;
 
-import butterknife.Bind;
+
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class DetailsActivity extends AppCompatActivity implements DetailsView {
 
     //bind views
-    @Bind(R.id.titleText)
+    @BindView(R.id.titleText)
     TextView titleText;
-    @Bind(R.id.detailsText)
+    @BindView(R.id.detailsText)
     TextView detailsText;
-    @Bind(R.id.fab)
+    @BindView(R.id.fab)
     FloatingActionButton floatingActionButton;
-    @Bind(R.id.coordinator)
+    @BindView(R.id.coordinator)
     CoordinatorLayout coordinatorLayout;
     public static int position;
     private DetailsPresenter detailsPresenter;

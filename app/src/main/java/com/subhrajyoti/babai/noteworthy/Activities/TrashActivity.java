@@ -26,17 +26,18 @@ import com.subhrajyoti.babai.noteworthy.Views.TrashView;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class TrashActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, TrashView {
 
     //declarations
-    @Bind(R.id.recyclerView)
+    @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @Bind(R.id.coordinator)
+    @BindView(R.id.coordinator)
     View coordinatorView;
     private ArrayList<Note> notes;
     private ArrayList<Note> filteredModelList;
