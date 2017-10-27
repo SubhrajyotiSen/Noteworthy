@@ -15,7 +15,6 @@ public class FormatDateTime {
     public FormatDateTime(Context mContext) {
         this.context = mContext;
     }
-
     public String formatDate(Date date) {
         java.text.DateFormat finalDataFormat = DateFormat.getDateInstance(DateFormat.SHORT);
         java.text.DateFormat finalTimeFormat;

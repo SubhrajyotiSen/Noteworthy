@@ -46,32 +46,33 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
+import butterknife.BindViews;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, SearchView.OnQueryTextListener, MainView {
 
     public static boolean firstView;
     //Declare views and bind views
-    @Bind(R.id.fab)
+    @BindView(R.id.fab)
     FloatingActionButton fab;
-    @Bind(R.id.drawer_layout)
+    @BindView(R.id.drawer_layout)
     DrawerLayout drawer;
-    @Bind(R.id.recyclerView)
+    @BindView(R.id.recyclerView)
     RecyclerViewEmptySupport recyclerView;
-    @Bind(R.id.first)
+    @BindView(R.id.first)
     RelativeLayout first;
-    @Bind(R.id.second)
+    @BindView(R.id.second)
     LinearLayout second;
-    @Bind(R.id.coordinator)
+    @BindView(R.id.coordinator)
     View coordinatorView;
-    @Bind(R.id.frameLayout)
+    @BindView(R.id.frameLayout)
     FrameLayout frameLayout;
-    @Bind(R.id.title_text)
+    @BindView(R.id.title_text)
     EditText titleText;
-    @Bind(R.id.desc_text)
+    @BindView(R.id.desc_text)
     EditText descText;
-    @Bind(R.id.emptyTextView)
+    @BindView(R.id.emptyTextView)
     TextView emptyTextView;
     private LinearLayoutManager linearLayoutManager;
     private SearchView searchView;
@@ -103,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //animation for FAB
         Animation animation = AnimationUtils.loadAnimation(this, R.anim.simple_grow);
-        fab.startAnimation(animation);
+         fab.startAnimation(animation);
 
         //listener for FAB
         fab.setOnClickListener(new View.OnClickListener() {
