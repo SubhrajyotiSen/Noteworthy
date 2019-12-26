@@ -1,0 +1,146 @@
+package me.subhrajyoti.noteworthy.DB;
+
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+
+import me.subhrajyoti.noteworthy.Models.Note;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class DBController {
+    // Database fields
+    private DBHelper DBHelper;
+    private SQLiteDatabase database;
+
+    public DBController(Context context) {
+        DBHelper = new DBHelper(context);
+    }
+
+    public void close() {
+        DBHelper.close();
+    }
+
+    public void addNote(Note note) {
+
+        database = DBHelper.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+
+        values.put(me.subhrajyoti.noteworthy.DB.DBHelper.COL_NOTE_TITLE, note.getTitle());
+        values.put(me.subhrajyoti.noteworthy.DB.DBHelper.COL_NOTE_DESC, note.getDesc());
+        values.put(me.subhrajyoti.noteworthy.DB.DBHelper.COL_NOTE_DATE, note.getDate());
+
+        database.insert(me.subhrajyoti.noteworthy.DB.DBHelper.TABLE_NAME, null, values);
+        database.close();
+    }
+
+    // Getting All notes
+    public List<Note> getAllNotes() {
+        SQLiteDatabase db = DBHelper.getWritableDatabase();
+
+        List<Note> noteList = new ArrayList<>();
+        // Select All Query
+        String selectQuery = "SELECT  * FROM " + me.subhrajyoti.noteworthy.DB.DBHelper.TABLE_NAME;
+
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                Note note = new Note();
+                note.setId(Integer.parseInt(cursor.getString(0)));
+                note.setTitle(cursor.getString(1));
+                note.setDesc(cursor.getString(2));
+                note.setDate(cursor.getString(3));
+                // Adding note to list
+                noteList.add(note);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+
+        // return note list
+        return noteList;
+    }
+
+    // Updating single note
+    public int updateNote(Note note) {
+        SQLiteDatabase db = DBHelper.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+
+        values.put(me.subhrajyoti.noteworthy.DB.DBHelper.COL_NOTE_TITLE, note.getTitle());
+        values.put(me.subhrajyoti.noteworthy.DB.DBHelper.COL_NOTE_DESC, note.getDesc());
+        values.put(me.subhrajyoti.noteworthy.DB.DBHelper.COL_NOTE_DATE, note.getDate());
+
+        // updating row
+        return db.update(me.subhrajyoti.noteworthy.DB.DBHelper.TABLE_NAME, values, me.subhrajyoti.noteworthy.DB.DBHelper.COL_ID + " = ?",
+                new String[]{String.valueOf(note.getId())});
+    }
+
+    // Deleting single note
+    public void deleteNote(Note note) {
+        SQLiteDatabase db = DBHelper.getWritableDatabase();
+
+        db.delete(me.subhrajyoti.noteworthy.DB.DBHelper.TABLE_NAME, me.subhrajyoti.noteworthy.DB.DBHelper.COL_ID + " = ?",
+                new String[]{String.valueOf(note.getId())});
+        db.close();
+    }
+     
+
+    public void addNoteToTrash(Note note) {
+
+        database = DBHelper.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+
+        values.put(me.subhrajyoti.noteworthy.DB.DBHelper.COL_NOTE_TITLE_TRASH, note.getTitle());
+        values.put(me.subhrajyoti.noteworthy.DB.DBHelper.COL_NOTE_DESC_TRASH, note.getDesc());
+        values.put(me.subhrajyoti.noteworthy.DB.DBHelper.COL_NOTE_DATE_TRASH, note.getDate());
+
+        database.insert(me.subhrajyoti.noteworthy.DB.DBHelper.TABLE_NAME_TRASH, null, values);
+        database.close();
+    }
+
+
+    // Getting All notes
+    public List<Note> getAllNotesFromTrash() {
+        SQLiteDatabase db = DBHelper.getWritableDatabase();
+
+        List<Note> noteList = new ArrayList<>();
+        // Select All Query
+        String selectQuery = "SELECT  * FROM " + me.subhrajyoti.noteworthy.DB.DBHelper.TABLE_NAME_TRASH;
+
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                Note note = new Note();
+                note.setId(Integer.parseInt(cursor.getString(0)));
+                note.setTitle(cursor.getString(1));
+                note.setDesc(cursor.getString(2));
+                note.setDate(cursor.getString(3));
+                // Adding note to list
+                noteList.add(note);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+
+        // return note list
+        return noteList;
+    }
+
+    // Deleting single note
+    public void deleteNoteFromTrash(Note note) {
+        SQLiteDatabase db = DBHelper.getWritableDatabase();
+
+        db.delete(me.subhrajyoti.noteworthy.DB.DBHelper.TABLE_NAME_TRASH, me.subhrajyoti.noteworthy.DB.DBHelper.COL_ID_TRASH + " = ?",
+                new String[]{String.valueOf(note.getId())});
+        db.close();
+    }
+
+
+}
